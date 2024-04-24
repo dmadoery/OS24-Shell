@@ -5,7 +5,9 @@
 #include<sys/types.h> 
 #include<sys/wait.h> 
 //#include<readline/readline.h> 
-//#include<readline/history.h> 
+//#include<readline/history.h>
+
+#define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 
 //parser for "|"
 void pipe_detector() {
@@ -29,6 +31,12 @@ void cmd_finder() {
 
 //main funciton of customized shell
 int main () {
-    
+		char user_input[MAX_INPUT_LENGTH];
+ 		while(1) {
+ 				printf("$ ");
+ 				scanf("%s", user_input);
+ 				// call parser
+ 				printf("Input: %s\n", user_input);
+ 		}  
     return 0;
 }
