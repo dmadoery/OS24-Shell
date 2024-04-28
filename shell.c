@@ -102,7 +102,7 @@ int main () {
     char user_input[MAX_INPUT_LENGTH];
     while(1) {
         printf("$ ");
-        scanf("%s", user_input);
+        scanf("%[^\n]%*c", user_input);
         // call parser
         printf("Input: %s\n", user_input);
         char ** o;
