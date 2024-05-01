@@ -23,21 +23,22 @@ void parser(char *in_str) {
 			if (i == 0) {
 				cmds[j].command = splited_cmd[i];
 			}
-			if (i == 1) {
-				char *flg = splited_cmd[i];
-				if (&flg[0] == "~") {
-					cmds[j].flag = flg;
-				}
-			}
-			if (i == 2) {
+			if (i == 1 && *splited_cmd[i]  ==  '~') {
+				cmds[j].flag = splited_cmd[i];
+			} else {
 				cmds[j].input1 = splited_cmd[i];
 			}
-			if (i == 3) {
+			if (i == 2 && cmds[j].input1 == "") {
+				cmds[j].input1 = splited_cmd[i];
+			} else {
+				cmds[j].input2 = splited_cmd[i];
+			}
+			if (i == 3 && cmds[j].input2 == "") {
 				cmds[j].input2 = splited_cmd[i];
 			}
 		}
 	}
-	
+
 	for(int i = 0; i < n; i++) {
 		printf("Command: %s\n", cmds[i].command);
 		printf("Flag: %s\n", cmds[i].flag);
@@ -63,14 +64,14 @@ int count(char *in_str, const char *delim) {
 
 /* Helper function for split */
 char* copy(char* in_str, int length) {
-	printf("[copy] length: %d\n", length);
+	//printf("[copy] length: %d\n", length);
 	char *out_str;
 	out_str = (char *) malloc(length * sizeof(char));
 	for (int i = 0; i < length; i++) {
-		printf("i: %d\n", i);
+		//printf("i: %d\n", i);
 		out_str[i] = in_str[i];
 	}
-	printf("[copy] out_str: %s\n", out_str);
+	//printf("[copy] out_str: %s\n", out_str);
 	return out_str;
 }
 
@@ -88,8 +89,8 @@ char ** split(char *in_str, const char *delim) {
 		tmp++;
 	}
 	
-	printf("nr_of_delims: %d\n", nr_of_delims);
-	printf("nr_of_chars: %d\n", nr_of_chars);
+	//printf("nr_of_delims: %d\n", nr_of_delims);
+	//printf("nr_of_chars: %d\n", nr_of_chars);
 	char sub_str[nr_of_chars - nr_of_delims];
 	char **out_str;
 	out_str = (char **) malloc((nr_of_delims + 1) * sizeof(char *));
@@ -99,10 +100,10 @@ char ** split(char *in_str, const char *delim) {
 	int offset = 0;
 	
 	for (j = 0; j < nr_of_chars; j++) {
-		printf("j: %d\n", j);
+		//printf("j: %d\n", j);
 		if (in_str[j] == *delim) {
 			out_str[i] = copy(sub_str, j - offset);
-			printf("here\n");
+			//printf("here\n");
 			//printf("%s\n", *out_str[i]);
 			i++;
 			offset = j + 1;
