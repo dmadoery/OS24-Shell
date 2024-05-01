@@ -10,30 +10,39 @@
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 char ** split(char *in_str, const char *delim);
+int count(char *in_str, const char *delim);
 //
 void parser(char *in_str) {
     int n = count(in_str, "|") + 1;
+	printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
-	char *full_cmd = split(in_str, "|");
+	char **full_cmd = split(in_str, "|");
 	for(int j = 0; j < n; j++) {
-		char *splited_cmd = split(&full_cmd[j], " ");
+		char **splited_cmd = split(full_cmd[j], " ");
 		for (int i = 0; i < 4; i++) {
-			if (i == 1) {
-				cmds[j].command = &splited_cmd[i];
+			if (i == 0) {
+				cmds[j].command = splited_cmd[i];
 			}
-			if (i == 2) {
-				char *flg = &splited_cmd[i];
+			if (i == 1) {
+				char *flg = splited_cmd[i];
 				if (&flg[0] == "~") {
 					cmds[j].flag = flg;
 				}
 			}
-			if (i == 3) {
-				cmds[j].input1 = &splited_cmd[i];
+			if (i == 2) {
+				cmds[j].input1 = splited_cmd[i];
 			}
-			if (i == 4) {
-				cmds[j].input2 = &splited_cmd[i];
+			if (i == 3) {
+				cmds[j].input2 = splited_cmd[i];
 			}
 		}
+	}
+	
+	for(int i = 0; i < n; i++) {
+		printf("Command: %s\n", cmds[i].command);
+		printf("Flag: %s\n", cmds[i].flag);
+		printf("Input 1: %s\n", cmds[i].input1);
+		printf("Input 2: %s\n", cmds[i].input2);
 	}
 	
 }
