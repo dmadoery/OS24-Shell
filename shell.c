@@ -4,37 +4,38 @@
 #include<unistd.h> 
 #include<sys/types.h> 
 #include<sys/wait.h> 
-#include<cmd.h>
+#include"cmd.h"
 //#include<readline/readline.h> 
 //#include<readline/history.h>
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
-
+char ** split(char *in_str, const char *delim);
 //
 void parser(char *in_str) {
     int n = count(in_str, "|") + 1;
 	struct cmd cmds[n];
 	char *full_cmd = split(in_str, "|");
-	for(int j = 0; n>0; n--) {
-		char **splited_cmd = split(full_cmd[j], " ");
+	for(int j = 0; j < n; j++) {
+		char *splited_cmd = split(&full_cmd[j], " ");
 		for (int i = 0; i < 4; i++) {
 			if (i == 1) {
-				cmds[j].command = splited_cmd[i];
+				cmds[j].command = &splited_cmd[i];
 			}
 			if (i == 2) {
-				char *flg = splited_cmd[i];
-				if (flg[0] == "~") {
+				char *flg = &splited_cmd[i];
+				if (&flg[0] == "~") {
 					cmds[j].flag = flg;
 				}
 			}
 			if (i == 3) {
-				cmds[j].input1 = splited_cmd[i];
+				cmds[j].input1 = &splited_cmd[i];
 			}
 			if (i == 4) {
-				cmds[j].input2 = splited_cmd[i];
+				cmds[j].input2 = &splited_cmd[i];
 			}
 		}
 	}
+	
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
@@ -123,12 +124,12 @@ int main () {
         scanf("%[^\n]%*c", user_input);
         // call parser
         printf("Input: %s\n", user_input);
-        char ** o;
-        o = split(user_input, "|");
-        int n = count(user_input, "|");
-        for (int i = 0; i <= n; i++) {
-        	printf("sub: %s\n", o[i]);
-        }
+        //char ** o;
+        parser(user_input);
+        //int n = count(user_input, "|");
+        //for (int i = 0; i <= n; i++) {
+        //	printf("sub: %s\n", o[i]);
+        //}
         
     }  
     return 0;
