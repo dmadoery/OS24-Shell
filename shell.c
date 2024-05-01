@@ -16,10 +16,17 @@ void parser(char *in_str) {
     int n = count(in_str, "|") + 1;
 	printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
+	for (int i = 0; i < n; i++) {
+		cmds[i].command = NULL;
+		cmds[i].flag = NULL;
+		cmds[i].input1 = NULL;
+		cmds[i].input2 = NULL;
+	}
 	char **full_cmd = split(in_str, "|");
 	for(int j = 0; j < n; j++) {
 		char **splited_cmd = split(full_cmd[j], " ");
 		for (int i = 0; i < 4; i++) {
+			
 			if (i == 0) {
 				cmds[j].command = splited_cmd[i];
 			}
@@ -28,12 +35,12 @@ void parser(char *in_str) {
 			} else {
 				cmds[j].input1 = splited_cmd[i];
 			}
-			if (i == 2 && cmds[j].input1 == "") {
+			if (i == 2 && cmds[j].input1 == NULL ) {
 				cmds[j].input1 = splited_cmd[i];
 			} else {
 				cmds[j].input2 = splited_cmd[i];
 			}
-			if (i == 3 && cmds[j].input2 == "") {
+			if (i == 3 && cmds[j].input2 == NULL) {
 				cmds[j].input2 = splited_cmd[i];
 			}
 		}
