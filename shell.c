@@ -4,19 +4,37 @@
 #include<unistd.h> 
 #include<sys/types.h> 
 #include<sys/wait.h> 
+#include<cmd.h>
 //#include<readline/readline.h> 
 //#include<readline/history.h>
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 
-//parser for "|"
-void pipe_detector() {
-    //TODO Implement: perhabs could be combined into a single split() function with parameter delim set to "|" or " "
-}
-
-//parser for " "
-void space_parser() {
-    //TODO Implement: perhabs could be combined into a single split() function with parameter delim set to "|" or " "
+//
+void parser(char *in_str) {
+    int n = count(in_str, "|") + 1;
+	struct cmd cmds[n];
+	char *full_cmd = split(in_str, "|");
+	for(int j = 0; n>0; n--) {
+		char **splited_cmd = split(full_cmd[j], " ");
+		for (int i = 0; i < 4; i++) {
+			if (i == 1) {
+				cmds[j].command = splited_cmd[i];
+			}
+			if (i == 2) {
+				char *flg = splited_cmd[i];
+				if (flg[0] == "~") {
+					cmds[j].flag = flg;
+				}
+			}
+			if (i == 3) {
+				cmds[j].input1 = splited_cmd[i];
+			}
+			if (i == 4) {
+				cmds[j].input2 = splited_cmd[i];
+			}
+		}
+	}
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
