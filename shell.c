@@ -17,31 +17,40 @@ void parser(char *in_str) {
 	printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
 	for (int i = 0; i < n; i++) {
-		cmds[i].command = NULL;
-		cmds[i].flag = NULL;
-		cmds[i].input1 = NULL;
-		cmds[i].input2 = NULL;
+		cmds[i].command = "-"; //needs to be initalized with "-" to check if empty
+		cmds[i].flag = "-";
+		cmds[i].input1 = "-";
+		cmds[i].input2 = "-";
 	}
+	
 	char **full_cmd = split(in_str, "|");
 	for(int j = 0; j < n; j++) {
 		char **splited_cmd = split(full_cmd[j], " ");
+		//TODO: set i to the length of the splited_cmd
 		for (int i = 0; i < 4; i++) {
-			
+			//printf("%d\n", *splited_cmd[i]);
+			//printf("%d\n", cmds[j].input1);
 			if (i == 0) {
 				cmds[j].command = splited_cmd[i];
+				//printf("i=0\n");
 			}
-			if (i == 1 && *splited_cmd[i]  ==  '~') {
+			if (i == 1 && *splited_cmd[i]  ==  '~') { //126 is '~'
 				cmds[j].flag = splited_cmd[i];
-			} else {
+				//printf("i=1/if, :%c\n", *splited_cmd[i]);
+			} else if (i == 1) {
 				cmds[j].input1 = splited_cmd[i];
+				//printf("i=1/else\n");
 			}
-			if (i == 2 && cmds[j].input1 == NULL ) {
+			if (i == 2 && *cmds[j].input1 == '-') { //45 is '-' and is the empty symbol for this shell
 				cmds[j].input1 = splited_cmd[i];
-			} else {
+				//printf("i=2/if\n");
+			} else if (i == 2) {
 				cmds[j].input2 = splited_cmd[i];
+				//printf("i=2/else\n");
 			}
-			if (i == 3 && cmds[j].input2 == NULL) {
+			if (i == 3 && *cmds[j].input2 == '-') {
 				cmds[j].input2 = splited_cmd[i];
+				//printf("i=3\n");
 			}
 		}
 	}
@@ -151,3 +160,5 @@ int main () {
     }  
     return 0;
 }
+
+//test input: test1 ~c hi you|test2 ~t a b
