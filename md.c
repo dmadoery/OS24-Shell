@@ -14,12 +14,19 @@ int md(const char *dir_name) {
 	}
 }
 
+/*
+receives input in the format
+	command = ./md = argv[0]
+	flag = NULL = argv[1]
+	inpu1 = dir_name = argv[2]
+	input2 = NULL = argv[3]
+*/
 int main(int argc, char **argv) {
-	if (argc != 2) {
-		printf("Syntax error - expected format: md dir_name");
+	if (argc != 4) {
+		printf("Syntax error - expected format: md NULL dir_name NULL");
 		return -1;
 	}
-	int ret = md(argv[1]);
+	int ret = md(argv[2]);
 	if (ret != 0) {	// error handling
 		switch (ret) {
 			case 2:

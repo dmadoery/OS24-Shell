@@ -11,7 +11,47 @@
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 char ** split(char *in_str, const char *delim);
 int count(char *in_str, const char *delim);
-//
+
+/* called by the parser to execute the commands
+cmds: array with the commands to be executed
+length: number of commands in cmds */
+void execute(struct cmd *cmds, int length) {
+	for(int i = 0; i < length; i++) {
+		printf("Command: %s\n", cmds[i].command);
+		printf("Flag: %s\n", cmds[i].flag);
+		printf("Input 1: %s\n", cmds[i].input1);
+		printf("Input 2: %s\n", cmds[i].input2);
+	}
+	if (length == 1) {
+		// no piping
+		char *cmd_str = cmds[0].command;
+		int n = strlen(cmd_str);
+		// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+		char cmd_exec[n + 3];
+		cmd_exec[0] = '.';
+		cmd_exec[1] = '/';
+		for (int i = 0; i < n; i++) {
+			cmd_exec[i + 2] = cmd_str[i];
+		}
+		cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+		char *argv[] = {cmd_exec, cmds[0].flag, cmds[0].input1, cmds[0].input2, NULL};
+		pid_t pid = fork();
+		int status;
+		
+		if (pid < 0) {
+			printf("[fun execute]: fork error\n");
+		} else if (pid == 0) {	// child
+			execvp(argv[0], argv);
+		} else {	// parent
+			waitpid(pid, &status, 0);
+		}		
+	} else if (length > 1) {
+		// TODO piping
+	} else { // length < 1
+		printf("[fun execute]: length < 1\n");
+	}
+}
+
 void parser(char *in_str) {
     int n = count(in_str, "|") + 1;
 	printf("Number of commands: %d\n", n);
@@ -61,41 +101,7 @@ void parser(char *in_str) {
 		printf("Input 1: %s\n", cmds[i].input1);
 		printf("Input 2: %s\n", cmds[i].input2);
 	}
-	
-}
-
-/* called by the parser to execute the commands
-cmds: array with the commands to be executed
-length: number of commands in cmds */
-void execute(struct cmd *cmds, int length) {
-	if (length == 1) {
-		// no piping
-		char *cmd_str = cmds[0].command;
-		int n = strlen(cmd_str);
-		// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
-		char cmd_exec[n + 3];
-		cmd_exec[0] = '.';
-		cmd_exec[1] = '/';
-		for (int i = 0; i < n; i++) {
-			cmd_exec[i + 2] = cmd_str[i];
-		}
-		cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
-		char *argv[] = {cmd_exec, cmds[0].flag, cmds[0].input1, cmds[0].input2, NULL};
-		pid_t pid = fork();
-		int status;
-		
-		if (pid < 0) {
-			printf("[fun execute]: fork error\n");
-		} else if (pid == 0) {	// child
-			execvp(argv[0], argv);
-		} else {	// parent
-			waitpid(pid, &status, 0);
-		}		
-	} else if (length > 1) {
-		// TODO piping
-	} else { // length < 1
-		printf("[fun execute]: length < 1\n");
-	}
+	execute(cmds, n);
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
