@@ -66,8 +66,9 @@ void parser(char *in_str) {
 	char **full_cmd = split(in_str, "|");
 	for(int j = 0; j < n; j++) {
 		char **splited_cmd = split(full_cmd[j], " ");
-		//TODO: set i to the length of the splited_cmd
-		for (int i = 0; i < 4; i++) {
+		//TODO: set m to the length of the splited_cmd
+		int m = count(full_cmd[j], " ") + 1;
+		for (int i = 0; i < m; i++) {
 			//printf("%d\n", *splited_cmd[i]);
 			//printf("%d\n", cmds[j].input1);
 			if (i == 0) {

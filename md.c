@@ -30,10 +30,10 @@ int main(int argc, char **argv) {
 	if (ret != 0) {	// error handling
 		switch (ret) {
 			case 2:
-				printf("(Parent) directory in %s not found\n", argv[1]);
+				printf("(Parent) directory in %s not found\n", argv[2]);
 				break;
 			case 17:
-				printf("Directory %s could not be created as it already exists\n", argv[1]);
+				printf("Directory %s could not be created as it already exists\n", argv[2]);
 				break;
 			default:
 				printf("Unspecified error [errno: %d]\n", ret);
