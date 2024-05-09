@@ -64,6 +64,40 @@ void parser(char *in_str) {
 	
 }
 
+/* called by the parser to execute the commands
+cmds: array with the commands to be executed
+length: number of commands in cmds */
+void execute(struct cmd *cmds, int length) {
+	if (length == 1) {
+		// no piping
+		char *cmd_str = cmds[0].command;
+		int n = strlen(cmd_str);
+		// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+		char cmd_exec[n + 3];
+		cmd_exec[0] = '.';
+		cmd_exec[1] = '/';
+		for (int i = 0; i < n; i++) {
+			cmd_exec[i + 2] = cmd_str[i];
+		}
+		cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+		char *argv[] = {cmd_exec, cmds[0].flag, cmds[0].input1, cmds[0].input2, NULL};
+		pid_t pid = fork();
+		int status;
+		
+		if (pid < 0) {
+			printf("[fun execute]: fork error\n");
+		} else if (pid == 0) {	// child
+			execvp(argv[0], argv);
+		} else {	// parent
+			waitpid(pid, &status, 0);
+		}		
+	} else if (length > 1) {
+		// TODO piping
+	} else { // length < 1
+		printf("[fun execute]: length < 1\n");
+	}
+}
+
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
 int count(char *in_str, const char *delim) {
 	int counter = 0;
