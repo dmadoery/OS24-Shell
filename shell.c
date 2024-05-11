@@ -61,7 +61,7 @@ void parser(char *in_str) {
 		printf("Input 1: %s\n", cmds[i].input1);
 		printf("Input 2: %s\n", cmds[i].input2);
 	}
-	
+	exe_cmd();
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
@@ -135,10 +135,15 @@ char ** split(char *in_str, const char *delim) {
 //executes piped and single commands via child processes with pipe communication if there are multiple cmds
 void exe_cmd() {
     //TODO Implement
+
+	//input output 
+	//pipe or not pipe
+	//if else for cmds checker
+	//execute cmd in pipe or seperate
 }
 
 //switch case for all cmds
-void cmd_finder() {
+void cmd_checker() {
     //TODO Not sure if needed as own function
 }
 
