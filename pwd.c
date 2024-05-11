@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #define PATH_MAX 1024
-#define RIGHTS 0777 // 0777: give read, write, and execute rights to owner, group, and others
 
 /* Expected call format md dir_name */
 int pwd() {
