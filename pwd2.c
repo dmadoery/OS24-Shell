@@ -5,9 +5,9 @@
 
 /*
 receives input in the format
-	command = ./md = argv[0]
+	command = ./pwd2 = argv[0]
 	flag = "-" = argv[1]
-	inpu1 = dir_name = argv[2]
+	inpu1 = "-" = argv[2]
 	input2 = "-" = argv[3]
 */
 int main(int argc, char **argv) {
