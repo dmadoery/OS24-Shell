@@ -5,6 +5,10 @@
 #include<sys/types.h> 
 #include<sys/wait.h> 
 #include"cmd.h"
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <assert.h>
 //#include<readline/readline.h> 
 //#include<readline/history.h>
 
@@ -188,8 +192,40 @@ void cmd_checker() {
     //TODO Not sure if needed as own function
 }
 
+//initialize user/pc name/ path
+void init() { 
+	char user_name[MAX_INPUT_LENGTH];
+	char pc_name[MAX_INPUT_LENGTH];
+	*user_name = geteuid();
+	gethostname(pc_name, sizeof(pc_name));
+	int n = strlen(user_name);
+	char dir_path[n+7];
+	dir_path[0] = '/';
+	dir_path[1] = 'h';
+	dir_path[2] = 'o';
+	dir_path[3] = 'm';
+	dir_path[4] = 'e';
+	dir_path[5] = '/';
+	for (int i = 0; i < n; i++) {
+		dir_path[i + 6] = user_name[i];
+	}
+	dir_path[n+6] = '\0';
+
+	//fill struct dfshm
+	
+	//share memory
+	int shmfd = shm_open("/Open_SHM", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	assert( shmfd != 1);
+	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
+	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
+	assert(data != MAP_FAILED);
+	data->current_working_dir = dir_path;
+	data->pc_name = pc_name;
+}
+
 //main funciton of customized shell
 int main () {
+	init();
     char user_input[MAX_INPUT_LENGTH];
     while(1) {
         printf("$ ");

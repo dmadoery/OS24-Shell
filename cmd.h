@@ -14,3 +14,9 @@ struct cmd {
     char *input1;
     char *input2;
 };
+
+//data for shared memory
+struct dfshm {
+	char *current_working_dir;
+	char *pc_name;
+};
