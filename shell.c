@@ -14,6 +14,10 @@
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 
+// shared memory
+int shmfd;
+struct dfshm *data;
+
 char ** split(char *in_str, const char *delim);
 int count(char *in_str, const char *delim);
 
@@ -198,7 +202,7 @@ void init() {
 	char *user_name;
 	//char pc_name[MAX_INPUT_LENGTH];
 	//user_name = getlogin();
-	user_name = "huch";
+	user_name = getenv("USER");
 	//gethostname(pc_name, sizeof(pc_name));
 	int n = strlen(user_name);
 	printf("n = %d\n", n);
@@ -219,27 +223,38 @@ void init() {
 	
 	//share memory
 	
-	int shmfd = shm_open("/Open_SHM34", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	shmfd = shm_open("/Open_SHM667", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
-	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
+	data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	assert(data != MAP_FAILED);
 	//data->current_working_dir = dir_path;
 	strcpy(data->current_working_dir, dir_path);
 	//data->pc_name = pc_name;
-	printf("[init] %s\n", data->current_working_dir);
-    //munmap (data, sizeof (struct dfshm));
-    //close (shmfd);   
+	printf("[init] %s\n", data->current_working_dir);  
+}
+
+/* Called before exiting the shell to properly free memory and close shared memory */
+void finally() {
+	munmap (data, sizeof (struct dfshm));
+    close (shmfd);
+    shm_unlink ("/Open_SHM667");
 }
 
 //main funciton of customized shell
 int main () {
+	printf("Welcome to SHell!!!\n");
+	printf("Type exit to exit shell\n");
 	init();
     char user_input[MAX_INPUT_LENGTH];
     while(1) {
         printf("$ ");
         scanf("%[^\n]%*c", user_input);
         // call parser
+        if (strcmp(user_input, "exit") == 0) {
+        	finally();
+        	break;
+        }
         printf("Input: %s\n", user_input);
         //char ** o;
         parser(user_input);
