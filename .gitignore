@@ -1,9 +1,15 @@
 # Specific
 .vscode
 calc
+cd
+cp
 ls
 md
+mf
+mv
 pwd
+search
+view
 
 # Prerequisites
 *.d
