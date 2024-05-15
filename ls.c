@@ -4,11 +4,12 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define PATH_MAX 1024
+//https://iq.opengenus.org/ls-command-in-c/#google_vignette
 
 /* Expected call format ls (~a) */
-int ls(char flag) {
+int ls(int flag) {
 	struct dirent *d;
     DIR *dh = opendir(".");
     if (!dh) {
@@ -23,19 +24,21 @@ int ls(char flag) {
     }
     while ((d = readdir(dh)) != NULL) {
 		//If hidden files are found we continue dont know if hidden files is working...
-		if (flag == 1 && d->d_name[0] == '.')
+		if (!flag && d->d_name[0] == '.')
 			continue;
-		printf("%s  ", d->d_name);    
+		printf("%s  ", d->d_name);   
+        if (flag && d->d_name[0] == '.') 
+            printf("%s  ", d->d_name);
 	}
     printf("\n");
 }
 
 int main(int argc, char **argv) {
     int flag;
-    if(argv[1] != '-') {
+    if(*argv[1] == '-') {
         flag = 0;
         ls(flag);
-    } else {
+    } else if (strcmp(argv[1], "~a") == 0){
         flag = 1;
         ls(flag);
     }
