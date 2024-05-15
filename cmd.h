@@ -17,6 +17,7 @@ struct cmd {
 
 //data for shared memory
 struct dfshm {
-	char *current_working_dir;
-	char *pc_name;
+	char current_working_dir[PATH_MAX];
+	char pc_name[PATH_MAX];
 };
+

@@ -13,6 +13,7 @@
 //#include<readline/history.h>
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
+
 char ** split(char *in_str, const char *delim);
 int count(char *in_str, const char *delim);
 
@@ -73,8 +74,8 @@ void parser(char *in_str) {
 		//TODO: set m to the length of the splited_cmd
 		int m = count(full_cmd[j], " ") + 1;
 		for (int i = 0; i < m; i++) {
-			//printf("%d\n", *splited_cmd[i]);
-			//printf("%d\n", cmds[j].input1);
+			printf("%s\n", splited_cmd[i]);
+			printf("%ld\n", strlen(splited_cmd[i]));
 			if (i == 0) {
 				cmds[j].command = splited_cmd[i];
 				//printf("i=0\n");
@@ -194,11 +195,13 @@ void cmd_checker() {
 
 //initialize user/pc name/ path
 void init() { 
-	char user_name[MAX_INPUT_LENGTH];
-	char pc_name[MAX_INPUT_LENGTH];
-	*user_name = geteuid();
-	gethostname(pc_name, sizeof(pc_name));
+	char *user_name;
+	//char pc_name[MAX_INPUT_LENGTH];
+	//user_name = getlogin();
+	user_name = "huch";
+	//gethostname(pc_name, sizeof(pc_name));
 	int n = strlen(user_name);
+	printf("n = %d\n", n);
 	char dir_path[n+7];
 	dir_path[0] = '/';
 	dir_path[1] = 'h';
@@ -210,17 +213,23 @@ void init() {
 		dir_path[i + 6] = user_name[i];
 	}
 	dir_path[n+6] = '\0';
+	printf("[init] %s\n", dir_path);
 
 	//fill struct dfshm
 	
 	//share memory
-	int shmfd = shm_open("/Open_SHM", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	
+	int shmfd = shm_open("/Open_SHM34", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
 	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	assert(data != MAP_FAILED);
-	data->current_working_dir = dir_path;
-	data->pc_name = pc_name;
+	//data->current_working_dir = dir_path;
+	strcpy(data->current_working_dir, dir_path);
+	//data->pc_name = pc_name;
+	printf("[init] %s\n", data->current_working_dir);
+    //munmap (data, sizeof (struct dfshm));
+    //close (shmfd);   
 }
 
 //main funciton of customized shell
