@@ -5,13 +5,26 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include "cmd.h"
 
 //https://iq.opengenus.org/ls-command-in-c/#google_vignette
 
 /* Expected call format ls (~a) */
 int ls(int flag) {
 	struct dirent *d;
-    DIR *dh = opendir(".");
+    char *cwd;
+    int shmfd = shm_open("/Open_SHM4", O_RDWR, S_IRUSR | S_IWUSR);
+	if (shmfd == -1) {
+		printf("[pwd2] shm_open failed\n");
+	}
+	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
+	if (data == NULL) {
+		printf("[pwd2] mmap failed\n");
+	}
+	cwd = data->current_working_dir;
+    DIR *dh = opendir(cwd);
     if (!dh) {
         if (errno = ENOENT) {
             perror("Directory doesen't exist\n");

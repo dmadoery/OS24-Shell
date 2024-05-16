@@ -26,10 +26,10 @@ cmds: array with the commands to be executed
 length: number of commands in cmds */
 void execute(struct cmd *cmds, int length) {
 	for(int i = 0; i < length; i++) {
-		printf("Command: %s\n", cmds[i].command);
-		printf("Flag: %s\n", cmds[i].flag);
-		printf("Input 1: %s\n", cmds[i].input1);
-		printf("Input 2: %s\n", cmds[i].input2);
+		//printf("Command: %s\n", cmds[i].command);
+		//printf("Flag: %s\n", cmds[i].flag);
+		//printf("Input 1: %s\n", cmds[i].input1);
+		//printf("Input 2: %s\n", cmds[i].input2);
 	}
 	if (length == 1) {
 		// no piping
@@ -218,12 +218,9 @@ void init() {
 	}
 	dir_path[n+6] = '\0';
 	printf("[init] %s\n", dir_path);
-
-	//fill struct dfshm
 	
 	//share memory
-	
-	shmfd = shm_open("/Open_SHM667", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	shmfd = shm_open("/Open_SHM4", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
 	data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
@@ -238,12 +235,12 @@ void init() {
 void finally() {
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);
-    shm_unlink ("/Open_SHM667");
+    shm_unlink ("/Open_SHM4");
 }
 
 //main funciton of customized shell
 int main () {
-	printf("Welcome to SHell!!!\n");
+	printf("Welcome to Shell!!!\n");
 	printf("Type exit to exit shell\n");
 	init();
     char user_input[MAX_INPUT_LENGTH];
