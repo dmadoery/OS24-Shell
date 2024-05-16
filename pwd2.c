@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	}
 	//struct dfshm *data;
 	char *cwd;
-	int shmfd = shm_open("/Open_SHM4", O_RDWR, S_IRUSR | S_IWUSR);
+	int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
 		printf("[pwd2] shm_open failed\n");
 	}

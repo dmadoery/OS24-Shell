@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	char cwd[PATH_MAX];
-    int shmfd = shm_open("/Open_SHM4", O_RDWR, S_IRUSR | S_IWUSR);
+    int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
 		printf("[cd] shm_open failed\n");
 	}

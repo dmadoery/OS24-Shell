@@ -220,7 +220,7 @@ void init() {
 	printf("[init] %s\n", dir_path);
 	
 	//share memory
-	shmfd = shm_open("/Open_SHM4", O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	shmfd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
 	data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
@@ -235,7 +235,7 @@ void init() {
 void finally() {
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);
-    shm_unlink ("/Open_SHM4");
+    shm_unlink (SHM_NAME);
 }
 
 //main funciton of customized shell
