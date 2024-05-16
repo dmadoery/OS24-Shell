@@ -28,16 +28,16 @@ int main(int argc, char **argv) {
 		printf("Syntax error - expected format: cd dir_name\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
-	char *cwd;
+	char cwd[PATH_MAX];
     int shmfd = shm_open("/Open_SHM4", O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
-		printf("[pwd2] shm_open failed\n");
+		printf("[cd] shm_open failed\n");
 	}
 	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	if (data == NULL) {
-		printf("[pwd2] mmap failed\n");
+		printf("[cd] mmap failed\n");
 	}
-	cwd = data->current_working_dir;
+	strcpy(cwd, data->current_working_dir);
 	//char dir[128];
 	//mkdir("Test", 0777);
 	//cd("Test");
@@ -61,10 +61,11 @@ int main(int argc, char **argv) {
 	printf("%s, %d\n", dir_name, n);
 	printf("%s, %d\n", cwd, m);
 	char new_cwd[n+m+2];
+	printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
 	for (int i = 0; i < m; i++) {
 		new_cwd[i] = cwd[i];
 	}
-	printf("%s\n", new_cwd);
+	//printf("%s\n", new_cwd);
 	new_cwd[m] = '/';
 	for (int j = 0; j < n; j++) {
 		new_cwd[m+1+j] = dir_name[j];
