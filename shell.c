@@ -55,11 +55,15 @@ void execute(struct cmd *cmds, int length) {
 			execvp(argv[0], argv);
 			switch(errno) {
 				case 2:
-					printf("Error in execute: command %s not found\n", argv[0]);
+					printf("Error[shell execute]: command %s not found\n", argv[0]);
+					break;
+				case 13:
+					printf("Error[shell execute]: permission denied\n");
 					break;
 				default:
 					printf("DEBUG: execute: unhandled errno %d\n", errno);
-			}		
+			}
+			exit(errno);	// ends the forked child process and ensures that exit works	
 		} else {	// parent
 			waitpid(pid, &status, 0);
 		}		
@@ -190,21 +194,6 @@ char ** split(char *in_str, const char *delim) {
 	return out_str;
 }
 
-//executes piped and single commands via child processes with pipe communication if there are multiple cmds
-void exe_cmd() {
-    //TODO Implement
-
-	//input output 
-	//pipe or not pipe
-	//if else for cmds checker
-	//execute cmd in pipe or seperate
-}
-
-//switch case for all cmds
-void cmd_checker() {
-    //TODO Not sure if needed as own function
-}
-
 //initialize user/pc name/ path
 void init() { 
 	char *user_name;
@@ -255,12 +244,12 @@ int main () {
     //while(1) { debugging
     for (int i = 0; i < DEBUG_MAX_IT; i++) {
         printf("$ ");
-        //scanf("%[^\n]%*c", user_input);
-        fgets(user_input, MAX_INPUT_LENGTH, stdin);
-        user_input[strcspn(user_input, "\n")] = 0;
+        //s
+        fgets(user_input, MAX_INPUT_LENGTH, stdin);	// don't use canf("%[^\n]%*c", user_input); as an empty input results in infinite loop and hard crash of terminal
+        user_input[strcspn(user_input, "\n")] = 0;	// removes the newline character '\n'
         // call parser
-        if (strlen(user_input) == 1) {
-        	printf("DEBUG: zero-length user input\n");
+        if (strlen(user_input) == 0) {
+        	//printf("DEBUG: zero-length user input\n");
         	continue;
         }
         if (strcmp(user_input, "exit") == 0) {
