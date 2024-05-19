@@ -20,6 +20,9 @@
 int shmfd;
 struct dfshm *data;
 
+// log file
+FILE *file;
+
 char ** split(char *in_str, const char *delim);
 int count(char *in_str, const char *delim);
 
@@ -235,11 +238,26 @@ void finally() {
     shm_unlink (SHM_NAME);
 }
 
+int toggle_recording(int recording) {
+	switch(recording) {
+		case 0:	// turn on recording
+			file = fopen("log.txt", "a");
+			fprintf(file, "--- start recoring ---\n");
+			break;
+		case 1:	// turn off recording
+			fprintf(file, "--- stop recoding ---\n");
+			fclose(file);
+			break;
+	}
+	return (++recording) % 2;
+}
+
 //main funciton of customized shell
 int main () {
-	printf("Welcome to Shell!!!\n");
+	printf("Welcome to Shell!!!\n"); 	// maybe have an help function for this ...
 	printf("Type exit to exit shell\n");
 	init();
+	int recording = 0;	// 0 = False
     char user_input[MAX_INPUT_LENGTH];
     //while(1) { debugging
     for (int i = 0; i < DEBUG_MAX_IT; i++) {
@@ -248,24 +266,27 @@ int main () {
         fgets(user_input, MAX_INPUT_LENGTH, stdin);	// don't use canf("%[^\n]%*c", user_input); as an empty input results in infinite loop and hard crash of terminal
         user_input[strcspn(user_input, "\n")] = 0;	// removes the newline character '\n'
         // call parser
+        if (recording && file != NULL) {
+        	fprintf(file, "%s\n", user_input);
+        }
         if (strlen(user_input) == 0) {
         	//printf("DEBUG: zero-length user input\n");
         	continue;
         }
         if (strcmp(user_input, "exit") == 0) {
-        	finally();
+        	//finally(); // can be moved ouside the while loop
         	break;
+        } else if (strcmp(user_input, "record") == 0) {
+        	recording = toggle_recording(recording);
+        } else {
+        	printf("Input: %s\n", user_input);
+        	parser(user_input);
         }
-        printf("Input: %s\n", user_input);
-        //char ** o;
-        parser(user_input);
-        //int n = count(user_input, "|");
-        //for (int i = 0; i <= n; i++) {
-        //	printf("sub: %s\n", o[i]);
-        //}
-        
     } 
-    finally(); 
+    finally();
+    if (recording) {
+    	toggle_recording(recording);
+    }
     return 0;
 }
 
