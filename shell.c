@@ -14,6 +14,8 @@
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
 
+#define DEBUG_MAX_IT 10
+
 // shared memory
 int shmfd;
 struct dfshm *data;
@@ -51,6 +53,13 @@ void execute(struct cmd *cmds, int length) {
 			printf("[fun execute]: fork error\n");
 		} else if (pid == 0) {	// child
 			execvp(argv[0], argv);
+			switch(errno) {
+				case 2:
+					printf("Error in execute: command %s not found\n", argv[0]);
+					break;
+				default:
+					printf("DEBUG: execute: unhandled errno %d\n", errno);
+			}		
 		} else {	// parent
 			waitpid(pid, &status, 0);
 		}		
@@ -75,7 +84,6 @@ void parser(char *in_str) {
 	char **full_cmd = split(in_str, "|");
 	for(int j = 0; j < n; j++) {
 		char **splited_cmd = split(full_cmd[j], " ");
-		//TODO: set m to the length of the splited_cmd
 		int m = count(full_cmd[j], " ") + 1;
 		for (int i = 0; i < m; i++) {
 			printf("%s\n", splited_cmd[i]);
@@ -244,10 +252,17 @@ int main () {
 	printf("Type exit to exit shell\n");
 	init();
     char user_input[MAX_INPUT_LENGTH];
-    while(1) {
+    //while(1) { debugging
+    for (int i = 0; i < DEBUG_MAX_IT; i++) {
         printf("$ ");
-        scanf("%[^\n]%*c", user_input);
+        //scanf("%[^\n]%*c", user_input);
+        fgets(user_input, MAX_INPUT_LENGTH, stdin);
+        user_input[strcspn(user_input, "\n")] = 0;
         // call parser
+        if (strlen(user_input) == 1) {
+        	printf("DEBUG: zero-length user input\n");
+        	continue;
+        }
         if (strcmp(user_input, "exit") == 0) {
         	finally();
         	break;
@@ -260,7 +275,8 @@ int main () {
         //	printf("sub: %s\n", o[i]);
         //}
         
-    }  
+    } 
+    finally(); 
     return 0;
 }
 
