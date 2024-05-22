@@ -38,7 +38,6 @@ int main(int argc, char **argv) {
 	}
 	char cwd[PATH_MAX];
 	strcpy(cwd, data->current_working_dir);
-	
 	char *dir_name = argv[2];
 	int n = strlen(dir_name);
 	int m = strlen(cwd);
@@ -57,7 +56,12 @@ int main(int argc, char **argv) {
 	}
 	new_cwd[n+m+2] = '\0';
 	printf("%s\n", new_cwd);
-	strcpy(data->current_working_dir, new_cwd);
-	printf("Changed the cwd to: %s\n", data->current_working_dir);
+	if(0 == access(new_cwd, F_OK)) {
+		strcpy(data->current_working_dir, new_cwd);
+		printf("Changed the cwd to: %s\n", data->current_working_dir);
+	} else {
+		printf("Directory does not exist!\n");
+	}
+	
 	return 0;
 }
