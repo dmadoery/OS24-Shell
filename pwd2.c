@@ -1,7 +1,8 @@
-#include <stdio.h>
-#include"cmd.h"
 #include <fcntl.h>
+#include <stdio.h>
 #include <sys/mman.h>
+
+#include "cmd.h"
 
 /*
 receives input in the format

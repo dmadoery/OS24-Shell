@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define PATH_MAX 1024	// used in pwd()
+#define PATH_MAX 1024
 
 // shared memory
 static const char SHM_NAME[] = "/Open_SHM"; 

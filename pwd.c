@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define PATH_MAX 1024
+#include "cmd.h" // PATH_MAX
 
 /* Expected call format pwd */
 int pwd() {
