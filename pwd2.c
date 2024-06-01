@@ -5,14 +5,15 @@
 
 /*
 receives input in the format
-	command = ./pwd2 = argv[0]
+	command = "./pwd2" = argv[0]
 	flag = "-" = argv[1]
 	inpu1 = "-" = argv[2]
 	input2 = "-" = argv[3]
 */
 int main(int argc, char **argv) {
 	if (argc != 4 || *argv[1] != '-' || *argv[2] != '-' || *argv[3] != '-') {
-		printf("Syntax error - expected format: md dir_name\n"); // note: user input format differs from input format receivde from shell
+		printf("Syntax error - expected format: pwd2 <dir_name>\n"); // note: user input format differs from input format receivde from shell
+		return -1;
 	}
 	//struct dfshm *data;
 	char *cwd;

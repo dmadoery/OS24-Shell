@@ -16,14 +16,14 @@ int md(const char *dir_name) {
 
 /*
 receives input in the format
-	command = ./md = argv[0]
+	command = "./md" = argv[0]
 	flag = "-" = argv[1]
-	inpu1 = dir_name = argv[2]
+	inpu1 = "<dir_name>" = argv[2]
 	input2 = "-" = argv[3]
 */
 int main(int argc, char **argv) {
 	if (argc != 4 || *argv[1] != '-' || *argv[2] == '-' || *argv[3] != '-') {
-		printf("Syntax error - expected format: md dir_name\n"); // note: user input format differs from input format receivde from shell
+		printf("Syntax error - expected format: md <dir_name>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
 	int ret = md(argv[2]);

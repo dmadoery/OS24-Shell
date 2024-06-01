@@ -88,9 +88,24 @@ char * substr(char *str, int start, int length) {
 	return 	substr_buffer;
 }
 
-int main(int argc, char *argv) {
-	// 1. trim the operation and verify that only valid symbols (digits and operators)
-	char* o1 = "3+4*5";
+/*
+receives input in the format
+	command = "./calc" = argv[0]
+	flag = "-" = argv[1]
+	inpu1 = "<operation>" = argv[2] e.g., 3+4*5 (no spaces because shell uses the space symbol to separate inputs)
+	input2 = "-" = argv[3]
+*/
+int main(int argc, char **argv) {
+	// verify input
+	if (argc != 4 || *argv[1] != '-' || (*argv[2] == '-' && strlen(argv[2]) == 1) || *argv[3] != '-') {
+		printf("Syntax error - expected format: calc <operation>\n"); // note: user input format differs from input format receivde from shell
+		return -1;
+	}
+	printf("%f\n", comp(argv[2]));
+
+	// testing	
+	/*
+	char* o1 = "3 + 4 * 5";
 	float r1 = comp(o1);
 	printf("%s = %f\n", o1, r1);
 	char* o2 = "3*4+5";
@@ -111,4 +126,5 @@ int main(int argc, char *argv) {
 	char* o7 = "16*16*16/16/16/16";
 	float r7 = comp(o7);
 	printf("%s = %f\n", o7, r7);
+	*/
 }
