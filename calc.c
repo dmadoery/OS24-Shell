@@ -59,19 +59,31 @@ float comp(char *operation) {
 }
 
 float mult(char *operand1, char *operand2) {
-	return comp(operand1) * comp(operand2);
+	float result = comp(operand1) * comp(operand2);
+	free(operand1);
+	free(operand2);
+	return result;
 }
 
 float divi(char *operand1, char *operand2) {
-	return comp(operand1) / comp(operand2);
+	float result = comp(operand1) / comp(operand2);
+	free(operand1);
+	free(operand2);
+	return result;
 }
 
 float add(char *operand1, char *operand2) {
-	return comp(operand1) + comp(operand2);
+	float result = comp(operand1) + comp(operand2);
+	free(operand1);
+	free(operand2);
+	return result;
 }
 
 float sub(char *operand1, char *operand2) {
-	return comp(operand1) - comp(operand2);	// exception: comp("2-3-4) = comp("2") + comp("-3-4") = 2 + comp("-3") + comp("-4") = 2 + -3 + -4 = -5
+	float result = comp(operand1) - comp(operand2);	// exception: comp("2-3-4) = comp("2") + comp("-3-4") = 2 + comp("-3") + comp("-4") = 2 + -3 + -4 = -5
+	free(operand1);
+	free(operand2);	
+	return result;
 }
 
 // Helper functions (maybe move to separate helper.h file
@@ -99,7 +111,7 @@ int main(int argc, char **argv) {
 	// verify input
 	if (argc != 4 || *argv[1] != '-' || (*argv[2] == '-' && strlen(argv[2]) == 1) || *argv[3] != '-') {
 		printf("Syntax error - expected format: calc <operation>\n"); // note: user input format differs from input format receivde from shell
-		return -1;
+		//return -1;
 	}
 	printf("%f\n", comp(argv[2]));
 
@@ -126,5 +138,5 @@ int main(int argc, char **argv) {
 	char* o7 = "16*16*16/16/16/16";
 	float r7 = comp(o7);
 	printf("%s = %f\n", o7, r7);
-	*/
+	*/	
 }
