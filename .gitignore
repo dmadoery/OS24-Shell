@@ -13,6 +13,8 @@ search
 shell
 view
 
+log.txt
+
 # Prerequisites
 *.d
 
