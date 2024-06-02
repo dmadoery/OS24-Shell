@@ -16,11 +16,12 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	FILE *fileptr;
-	fileptr = fopen(argv[2], "w");
+	fileptr = fopen(argv[2], "wb");
 	if (fileptr == NULL) {
 		perror("mf: fopen() failed\n");	// printf() may be redirected
 		exit(1);
 	}
+	fclose(fileptr);
 	return 0;
 	
 }
