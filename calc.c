@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
 	// verify input
 	if (argc != 4 || *argv[1] != '-' || (*argv[2] == '-' && strlen(argv[2]) == 1) || *argv[3] != '-') {
 		printf("Syntax error - expected format: calc <operation>\n"); // note: user input format differs from input format receivde from shell
-		//return -1;
+		return -1;
 	}
 	printf("%f\n", comp(argv[2]));
 

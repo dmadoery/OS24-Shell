@@ -66,7 +66,7 @@ void execute(struct cmd *cmds, int length) {
 				default:
 					printf("DEBUG: execute: unhandled errno %d\n", errno);
 			}
-			_exit(errno);	// ends the forked child process and ensures that exit works	
+			_exit(errno);	// ends the forked child process and ensures that exit works. Note _exit() recommended instead of exit()
 		} else {	// parent
 			waitpid(pid, &status, 0);
 		}		

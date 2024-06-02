@@ -1,6 +1,6 @@
 # To run, enter: make all
 
-all: calc cd ls md pwd pwd2 shell
+all: calc cd ls md mf pwd pwd2 shell
 
 calc: calc.c
 	gcc calc.c -o calc
@@ -13,6 +13,9 @@ ls: ls.c
 
 md: md.c
 	gcc md.c -o md
+
+mf: mf.c
+	gcc mf.c -o mf
 
 pwd: pwd.c
 	gcc pwd.c -o pwd
