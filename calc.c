@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
 
 	// testing	
 	/*
-	char* o1 = "3 + 4 * 5";
+	char* o1 = "3+4*5";
 	float r1 = comp(o1);
 	printf("%s = %f\n", o1, r1);
 	char* o2 = "3*4+5";
@@ -138,5 +138,5 @@ int main(int argc, char **argv) {
 	char* o7 = "16*16*16/16/16/16";
 	float r7 = comp(o7);
 	printf("%s = %f\n", o7, r7);
-	*/	
+	*/
 }
