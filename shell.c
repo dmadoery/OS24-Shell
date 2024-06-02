@@ -53,27 +53,74 @@ void execute(struct cmd *cmds, int length) {
 		int status;
 		
 		if (pid < 0) {
-			printf("[fun execute]: fork error\n");
+			printf("ERROR[shell execute]: fork error\n");
 		} else if (pid == 0) {	// child
 			execvp(argv[0], argv);
 			switch(errno) {
 				case 2:
-					printf("Error[shell execute]: command %s not found\n", argv[0]);
+					printf("ERROR[shell execute]: command %s not found\n", argv[0]);
 					break;
 				case 13:
-					printf("Error[shell execute]: permission denied\n");
+					printf("ERROR[shell execute]: permission denied\n");
 					break;
 				default:
-					printf("DEBUG: execute: unhandled errno %d\n", errno);
+					printf("DEBUG[shell execute]: unhandled errno %d\n", errno);
 			}
 			_exit(errno);	// ends the forked child process and ensures that exit works. Note _exit() recommended instead of exit()
 		} else {	// parent
 			waitpid(pid, &status, 0);
-		}		
-	} else if (length > 1) {
+		}
+	} else if (length == 2) {
+		// Parent saves stdin (0) and stdout (1)
+		int tempin = dup(0);
+		int tempout = dup(1);
+		
+		int fdpipe[2];
+		pipe(fdpipe); // pipe must be created in parent such that both children have access
+		
+		dup2(fdpipe[1], 1);	// stdout now refers to fdpipe[1], the write-to end of the (uni-)directional pipe
+		close(fdpipe[1]);	// since stdout is now a copy of fdpipe[1], the original is no longer needed
+		
+		// fork
+		pid_t pid = fork();
+		if (pid < 0) {
+			perror("ERROR[shell execute]: fork error\n");
+		} else if (pid == 0) {	// child	
+			close(fdpipe[0]); // the read-from end of the pipe is not needed in the first process (only the second)
+			char *cmd_str = cmds[0].command;
+			int n = strlen(cmd_str);
+			// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+			char cmd_exec[n + 3];
+			cmd_exec[0] = '.';
+			cmd_exec[1] = '/';
+			for (int i = 0; i < n; i++) {
+				cmd_exec[i + 2] = cmd_str[i];
+			}
+			cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+			char *argv[] = {cmd_exec, cmds[0].flag, cmds[0].input1, cmds[0].input2, NULL};
+			execvp(argv[0], argv);
+			// this section is only accessed if execvp fail
+			switch(errno) {
+				case 2:
+					perror("ERROR[shell execute]: command not found\n");
+					break;
+				case 13:
+					perror("ERROR[shell execute]: permission denied\n");
+					break;
+				default:
+					perror("DEBUG[shell execute]: unhandled errno\n");
+			}
+			_exit(errno);
+		} else {	// parent
+			dup2(fdpipe[0], 0);	// stdin now refers to fdpipe[0], the read-from end of the (uni-)directional pipe
+			close(fdpipe[0]);	// close the original
+			
+		}
+		
+	} else if (length > 2) {
 		// TODO piping
 	} else { // length < 1
-		printf("[fun execute]: length < 1\n");
+		printf("DEBUG[shell execute]: length < 1\n");
 	}
 }
 
