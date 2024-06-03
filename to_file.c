@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
 	}
 	printf("(1)\n");
 	char buffer[128];
-	fgets(buffer, sizeof(buffer), stdin);
-	printf("read: %s\n", buffer);
-	fprintf(to_file, "%s", buffer);
+	while(fgets(buffer, sizeof(buffer), stdin)) {
+		fprintf(to_file, "%s", buffer);
+	}
 	fclose(to_file);
 }
