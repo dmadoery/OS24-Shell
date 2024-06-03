@@ -100,6 +100,18 @@ char * substr(char *str, int start, int length) {
 	return 	substr_buffer;
 }
 
+/* Validates input */
+int is_valid(char *input) {
+	int n = strlen(input);
+	for (int i = 0; i < n; i++) {
+		if (!isdigit(input[i]) && input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/') {
+			perror("ERROR[Calc is_valid]: invalid input\n");
+			return 0;
+		}
+	}
+	return 1;
+}
+
 /*
 receives input in the format
 	command = "./calc" = argv[0]
@@ -113,6 +125,11 @@ int main(int argc, char **argv) {
 		printf("Syntax error - expected format: calc <operation>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
+	
+	if (!is_valid(argv[2])) {
+		return -1;
+	}
+	
 	printf("%f\n", comp(argv[2]));
 
 	// testing	
