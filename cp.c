@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
 		printf("[pwd2] mmap failed\n");
 	}
 	cwd = data->current_working_dir;
+	munmap (data, sizeof (struct dfshm));
+    close (shmfd);
 	
 	int m = strlen(cwd);
 	int n = strlen(argv[2]);
@@ -60,7 +62,7 @@ int main(int argc, char **argv) {
 	char line[128];
 	while (fgets(line, sizeof(line), from_file)) {
 		fprintf(to_file, "%s", line);
-	}	
+	}
 	fclose(from_file);
 	fclose(to_file);
 }
