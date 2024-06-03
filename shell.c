@@ -234,6 +234,7 @@ char* copy(char* in_str, int length) {
 		//printf("i: %d\n", i);
 		out_str[i] = in_str[i];
 	}
+	out_str[length] = '\0';
 	//printf("[copy] out_str: %s\n", out_str);
 	return out_str;
 }
