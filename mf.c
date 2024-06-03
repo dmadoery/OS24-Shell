@@ -23,25 +23,39 @@ int main(int argc, char **argv) {
 	char *cwd;
 	int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
-		printf("[pwd2] shm_open failed\n");
+		printf("ERROR[mf main] shm_open failed\n");
+		return -1;
 	}
 	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	if (data == NULL) {
-		printf("[pwd2] mmap failed\n");
+		printf("ERROR[mf main] mmap failed\n");
+		return -1;
 	}
 	cwd = data->current_working_dir;
-	munmap (data, sizeof (struct dfshm));
-    close (shmfd);
     
-    int m = strlen(cwd);
+    int m = strlen(cwd); // strlen() does not include '\0'
     int n = strlen(argv[2]);
+    printf("strlen(cwd): %d\n", m);
+    printf("strlen(argv[2]): %d\n", n);
 	
+	char path_file[m + n + 2];
+	for (int i = 0; i < m; i++) {
+		path_file[i] = cwd[i];
+	}
+	path_file[m] = '/';
+	for (int i = 0; i < n; i++) {
+		path_file[m + 1 + i] = argv[2][i];
+	}
+	path_file[m + n + 1] = '\0';
+	printf("path_file: %s\n", path_file);
 	FILE *fileptr;
-	fileptr = fopen(argv[2], "wb");
+	fileptr = fopen(path_file, "w");
 	if (fileptr == NULL) {
 		perror("mf: fopen() failed\n");	// printf() may be redirected
 		exit(1);
 	}
+	munmap (data, sizeof (struct dfshm));
+    close (shmfd);
 	fclose(fileptr);
 	return 0;
 	

@@ -20,11 +20,13 @@ int main(int argc, char **argv) {
 	char *cwd;
 	int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
-		printf("[pwd2] shm_open failed\n");
+		printf("ERROR[pwd2] shm_open failed\n");
+		return -1;
 	}
 	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	if (data == NULL) {
-		printf("[pwd2] mmap failed\n");
+		printf("ERROR[pwd2] mmap failed\n");
+		return -1;
 	}
 	cwd = data->current_working_dir;
 	printf("cwd: %s\n", cwd);

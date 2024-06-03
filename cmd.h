@@ -9,7 +9,7 @@
 #define PATH_MAX 1024
 
 // shared memory
-static const char SHM_NAME[] = "/Open_SHM"; 
+static const char SHM_NAME[] = "/Open_SHM1"; 
 
 struct cmd {
     char *command;
