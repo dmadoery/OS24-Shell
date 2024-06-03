@@ -1,6 +1,7 @@
 # To run, enter: make all
+# To force a recompilation (e.g., when changing cmd.h), enter make -B
 
-all: calc cd cp ls md mf pwd pwd2 shell to_file
+all: calc cd cp ls md mf pwd pwd2 shell to_file view
 
 calc: calc.c
 	gcc calc.c -o calc
@@ -31,3 +32,7 @@ shell: shell.c
 
 to_file: to_file.c
 	gcc to_file.c -o to_file
+
+view: view.c
+	gcc view.c -o view
+

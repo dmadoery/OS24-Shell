@@ -8,7 +8,7 @@
 
 /*
 receives input in the format
-	command = "./mf" = argv[0]
+	command = "./view" = argv[0]
 	flag = "-" = argv[1]
 	inpu1 = "<file_name>" = argv[2]
 	input2 = "-" = argv[3]
@@ -16,19 +16,19 @@ receives input in the format
 int main(int argc, char **argv) {
 	// verify input
 	if (argc != 4 || *argv[1] != '-' || *argv[2] == '-' || *argv[3] != '-') {
-		printf("Syntax error - expected format: mf <file_name>\n"); // note: user input format differs from input format receivde from shell
+		printf("Syntax error - expected format: view <file_name>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
 	// open shared memory
 	char *cwd;
 	int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd == -1) {
-		printf("ERROR[mf main]: shm_open failed\n");
+		printf("ERROR[view main]: shm_open failed\n");
 		return -1;
 	}
 	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	if (data == NULL) {
-		printf("ERROR[mf main]: mmap failed\n");
+		printf("ERROR[view main]: mmap failed\n");
 		return -1;
 	}
 	cwd = data->current_working_dir;
@@ -47,14 +47,24 @@ int main(int argc, char **argv) {
 	path_file[m + n + 1] = '\0';
 
 	FILE *fileptr;
-	fileptr = fopen(path_file, "w");
+	fileptr = fopen(path_file, "r");
 	if (fileptr == NULL) {
-		perror("ERROR[mf main]: fopen() failed\n");	// printf() may be redirected
+		perror("ERROR[view main]: fopen() failed\n");	// printf() may be redirected
 		return -1;
 	}
+	
+	char *line = NULL;	// getline() will allocate a buffer for storing the line. This buffer should be freed.
+	size_t len = 0;
+	while (getline(&line, &len, fileptr) != -1) {
+		printf("%s", line);
+	}
+	
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);
 	fclose(fileptr);
+	if (line) {
+		free(line);
+	}
 	return 0;
 	
 }
