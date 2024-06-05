@@ -37,13 +37,9 @@ int main(int argc, char **argv) {
 	cwd = data->current_working_dir;
 	pthread_mutex_unlock(&shm_mutex_lock);
 	
-	munmap (data, sizeof (struct dfshm));
-    close (shmfd);
-	
 	int m = strlen(cwd);
 	int n = strlen(argv[2]);
 	char from_path_file[m + n + 2];
-	char *to_path_file;
 	
 	for (int i = 0; i < m; i++) {
 		from_path_file[i] = cwd[i];
@@ -54,21 +50,20 @@ int main(int argc, char **argv) {
 	}
 	from_path_file[m + n + 1] = '\0';
 	
-	if (argv[3][0] != '/') {	// if the to_path begins with '/', then it is an absolute path
-		n = strlen(argv[2]);
-		to_path_file[m + n + 2];
-		for (int i = 0; i < m; i++) {
-			to_path_file[i] = cwd[i];
-		}
-		to_path_file[m] = '/';
-		for (int i = 0; i < n; i++) {
-			to_path_file[m + 1 + i] = argv[3][i];
-		}
-		to_path_file[m + n + 1] = '\0';
-	} else {
-		to_path_file = argv[3];
+	if (argv[3][0] == '/') {	// if the to_path begins with '/', then it is an absolute path
+		m = 0;
 	}
+	n = strlen(argv[3]);
+	char to_path_file[m + n + 2];
 	
+	for (int i = 0; i < m; i++) {
+		to_path_file[i] = cwd[i];
+	}
+	to_path_file[m] = '/';
+	for (int i = 0; i < n; i++) {
+		to_path_file[m + 1 + i] = argv[3][i];
+	}
+	to_path_file[m + n + 1] = '\0';
 	
 	// open files
 	FILE *from_file;
@@ -89,4 +84,8 @@ int main(int argc, char **argv) {
 	}
 	fclose(from_file);
 	fclose(to_file);
+		
+	munmap (data, sizeof (struct dfshm));
+    close (shmfd);
+	
 }
