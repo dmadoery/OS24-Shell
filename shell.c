@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <fcntl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h> 
@@ -279,7 +280,13 @@ char ** split(char *in_str, const char *delim) {
 }
 
 //initialize user/pc name/ path
-void init() { 
+void init() {
+	// mutex lock
+	int ret;
+	if ((ret = pthread_mutex_init(&shm_mutex_lock, NULL)) != 0) {
+		printf("ERROR[shell init]: pthread_mutex_init failed with error %d\n", ret);
+	}
+
 	char *user_name;
 	//char pc_name[MAX_INPUT_LENGTH];
 	//user_name = getlogin();
@@ -300,23 +307,31 @@ void init() {
 	dir_path[n+6] = '\0';
 	printf("[init] %s\n", dir_path);
 	
-	//share memory
+	// share memory
 	shmfd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
 	data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 	assert(data != MAP_FAILED);
 	//data->current_working_dir = dir_path;
+	pthread_mutex_lock(&shm_mutex_lock);
 	strcpy(data->current_working_dir, dir_path);
 	//data->pc_name = pc_name;
-	printf("[init] %s\n", data->current_working_dir);  
+	printf("[init] %s\n", data->current_working_dir);
+	pthread_mutex_unlock(&shm_mutex_lock);
+	
 }
 
 /* Called before exiting the shell to properly free memory and close shared memory */
 void finally() {
+    // mutex lock
+    pthread_mutex_unlock(&shm_mutex_lock);
+    
+	// shared memory
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);
     shm_unlink (SHM_NAME);
+    
 }
 
 int toggle_recording(int recording) {

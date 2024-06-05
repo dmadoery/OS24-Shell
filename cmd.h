@@ -11,6 +11,9 @@
 // shared memory
 static const char SHM_NAME[] = "/Open_SHM";
 
+// mutex
+pthread_mutex_t shm_mutex_lock;
+
 struct cmd {
     char *command;
     char *flag;
