@@ -1,19 +1,17 @@
-#include<stdio.h>
-#include<string.h> 
-#include<stdlib.h> 
-#include<unistd.h> 
-#include<sys/types.h> 
-#include<sys/wait.h> 
-#include"cmd.h"
+#include <assert.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h> 
+#include <string.h> 
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <assert.h>
-//#include<readline/readline.h> 
-//#include<readline/history.h>
+#include <sys/types.h> 
+#include <sys/wait.h>
+#include <unistd.h> 
+
+#include"cmd.h"
 
 #define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
-
 #define DEBUG_MAX_IT 10
 
 // shared memory
