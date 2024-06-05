@@ -1,7 +1,11 @@
 #include <errno.h>
+#include <fcntl.h> // O_RDWR
 #include <stdio.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include "cmd.h"
 
 #define RIGHTS 0777 // 0777: give read, write, and execute rights to owner, group, and others
 
@@ -26,7 +30,24 @@ int main(int argc, char **argv) {
 		printf("Syntax error - expected format: md <dir_name>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
+	// open shared memory
+	char *cwd;
+	int shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
+	if (shmfd == -1) {
+		printf("ERROR[view main]: shm_open failed\n");
+		return -1;
+	}
+	struct dfshm *data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
+	if (data == NULL) {
+		printf("ERROR[view main]: mmap failed\n");
+		return -1;
+	}
+	cwd = data->current_working_dir;
+	
 	int ret = md(argv[2]);
+	
+	munmap (data, sizeof (struct dfshm));
+    close (shmfd);
 	if (ret != 0) {	// error handling
 		switch (ret) {
 			case 2:
