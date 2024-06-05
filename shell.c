@@ -12,7 +12,7 @@
 
 #include"cmd.h"
 
-#define MAX_INPUT_LENGTH 40	/* maximal length of shell command */
+#define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
 
 // shared memory
