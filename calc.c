@@ -104,7 +104,7 @@ char * substr(char *str, int start, int length) {
 int is_valid(char *input) {
 	int n = strlen(input);
 	for (int i = 0; i < n; i++) {
-		if (!isdigit(input[i]) && input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/') {
+		if (!isdigit(input[i]) && input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '.') {
 			perror("ERROR[Calc is_valid]: invalid input\n");
 			return 0;
 		}

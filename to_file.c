@@ -16,7 +16,7 @@ receives input in the format
 	input2 = "-" = argv[3]
 */
 int main(int argc, char **argv) {
-	if (argc != 4 || *argv[1] != '-' || *argv[2] == '-' || *argv[3] != '-') {
+	if (argc != 4 || (*argv[1] != '-' && strcmp(argv[1], "~a") != 0) || *argv[2] == '-' || *argv[3] != '-') {
 		perror("Syntax error - expected format: to_file <[to_path/]to_file>"); // note: user input format differs from input format receivde from shell
 		exit(1);
 	}
@@ -59,7 +59,11 @@ int main(int argc, char **argv) {
 	to_path_file[m + n + 1] = '\0';
 	
 	FILE *to_file;
-	to_file = fopen(to_path_file, "w");
+	if (strcmp(argv[1], "~a") == 0) {
+		to_file = fopen(to_path_file, "a");	// open for append
+	} else {
+		to_file = fopen(to_path_file, "w");	// open for writing. If the file exists, its contents are overwritten.
+	}
 	if (to_file == NULL) {
 		perror("ERROR[to_file main]: fopen() failed for to_file");	// printf() may be redirected
 		exit(1);
