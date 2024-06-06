@@ -1,11 +1,7 @@
-#include <errno.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>	// chdir
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "cmd.h"
+
+#include "cmd.h" // includes <sys/types.h> etc.
 
 /* Expected call format cd dir_name */
 int cd(const char *dir_name) {
@@ -37,7 +33,9 @@ int main(int argc, char **argv) {
 		printf("[cd] mmap failed\n");
 	}
 	char cwd[PATH_MAX];
+	pthread_mutex_lock(&shm_mutex_lock);	
 	strcpy(cwd, data->current_working_dir);
+	pthread_mutex_unlock(&shm_mutex_lock);	
 	char *dir_name = argv[2];
 	int n = strlen(dir_name);
 	int m = strlen(cwd);
@@ -54,7 +52,7 @@ int main(int argc, char **argv) {
 	for (int j = 0; j < n; j++) {
 		new_cwd[m+1+j] = dir_name[j];
 	}
-	new_cwd[n+m+2] = '\0';
+	new_cwd[n+m+1] = '\0';
 	printf("%s\n", new_cwd);
 	if(0 == access(new_cwd, F_OK)) {
 		strcpy(data->current_working_dir, new_cwd);
