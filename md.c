@@ -9,7 +9,9 @@
 
 #define RIGHTS 0777 // 0777: give read, write, and execute rights to owner, group, and others
 
-/* Expected call format md dir_name */
+/* Expected call format md <dir_name> */
+/* creates a new directory called <dir_name> */
+
 int md(const char *dir_name) {
 	if (mkdir(dir_name, RIGHTS) == 0) {
 		return 0;		

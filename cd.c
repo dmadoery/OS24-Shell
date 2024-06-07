@@ -3,7 +3,10 @@
 
 #include "cmd.h" // includes <sys/types.h> etc.
 
-/* Expected call format cd dir_name */
+/* Expected call format cd (~f) <dir_name> (<dir_path>) */
+/* changes the directory to the given <dir_name> */
+/* if flag is set to ~f, an absolute path must be given */
+
 int cd(const char *dir_name) {
 	if (chdir(dir_name) == 0) {
 		return 0;		
@@ -48,11 +51,11 @@ int main(int argc, char **argv) {
 		char *dir_name = argv[2];
 		int n = strlen(dir_name);
 		int m = strlen(cwd);
-		printf("%s, %d\n", dir_name, n);
-		printf("%s, %d\n", cwd, m);
+		//printf("%s, %d\n", dir_name, n);
+		//printf("%s, %d\n", cwd, m);
 		//char new_cwd[n+m+2];
 		char new_cwd[PATH_MAX];
-		printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
+		//printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
 		//If the first two inputs form argv[2] are dots('.'), then cd jumps back one directory.
 		if (dir_name[0] == '.' && dir_name[1] == '.') {
 			int i = m;
@@ -73,7 +76,7 @@ int main(int argc, char **argv) {
 			}
 			new_cwd[n+m+1] = '\0';
 		}
-		printf("%s\n", new_cwd);
+		//printf("%s\n", new_cwd);
 		if(0 == access(new_cwd, F_OK)) {
 			strcpy(data->current_working_dir, new_cwd);
 			printf("Changed the cwd to: %s\n", data->current_working_dir);

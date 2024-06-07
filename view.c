@@ -6,6 +6,9 @@
 
 #include "cmd.h"
 
+/* Expected call format: view <file_name> */
+/* diplays the content of the file in the shell */
+
 /*
 receives input in the format
 	command = "./view" = argv[0]

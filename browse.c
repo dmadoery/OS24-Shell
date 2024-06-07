@@ -5,6 +5,9 @@
 #define URL_PREFIX "xdg-open http://"
 #define DEFAULT_PAGE "www.google.com"
 
+/* Expected call format: browse <web_page> */
+/* opens web_page in browser */
+
 /*
 receives input in the format
 	command = "./browse" = argv[0]

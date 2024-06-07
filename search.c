@@ -8,8 +8,8 @@
 #include <asm-generic/fcntl.h>
 #include <sys/mman.h>
 
-//use: search <file_name> 
-//info: starts search form /home
+/* Expected call format: search <file_name> */
+/* starts search from /home and finishes the search if a file with the searched <file_name> is found */
 
 #define BUFFER_SIZE 512
 

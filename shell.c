@@ -8,6 +8,34 @@
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
 
+/* This is the Shells core, to stat the shell use: "makefile -B" to compile all files needed */
+/* then start the shell using ./shell */
+
+/* This file contain: */
+
+/* execute():  */
+/* This function executes the diffrent commands, if multiple commands are called this function uses piping */
+/* To execute the commands a child process gets forked for every command */
+
+/* count(): */
+/* Counts the number of occurences of the delimiter delim in the input strint in_str */
+
+/* split(): */
+/* Splits the input string in_str into an array of substrings at each occurence of the delimiter delim */
+
+/* copy(): */
+/* Helper function for split() */
+
+/* init(): */
+/* Is used to initialize staring information for the Shell */
+/* initialize user_name, pc_name, sets path */
+
+/* finally(): */
+/* Is called before exiting the shell to properly free memory and close shared memory */
+
+/* toggle_recording(): */
+/* Records all user inputs entered into the shell */
+
 // shared memory
 int shmfd;
 struct dfshm *data;
@@ -153,7 +181,7 @@ void execute(struct cmd *cmds, int length) {
 
 void parser(char *in_str) {
     int n = count(in_str, "|", "") + 1;
-	printf("Number of commands: %d\n", n);
+	//printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
 	for (int i = 0; i < n; i++) {
 		cmds[i].command = "-"; //needs to be initalized with "-" to check if empty
@@ -171,8 +199,8 @@ void parser(char *in_str) {
     	}
     	char **splited_cmd = split(full_cmd[j], " ", "'");
 		for (int i = 0; i < m; i++) {
-			printf("%s\n", splited_cmd[i]);
-			printf("%ld\n", strlen(splited_cmd[i]));
+			//printf("%s\n", splited_cmd[i]);
+			//printf("%ld\n", strlen(splited_cmd[i]));
 			if (i == 0) {
 				cmds[j].command = splited_cmd[i];
 				//printf("i=0\n");
@@ -201,10 +229,10 @@ void parser(char *in_str) {
 	}
 
 	for(int i = 0; i < n; i++) {
-		printf("Command: %s\n", cmds[i].command);
-		printf("Flag: %s\n", cmds[i].flag);
-		printf("Input 1: %s\n", cmds[i].input1);
-		printf("Input 2: %s\n", cmds[i].input2);
+		//printf("Command: %s\n", cmds[i].command);
+		//printf("Flag: %s\n", cmds[i].flag);
+		//printf("Input 1: %s\n", cmds[i].input1);
+		//printf("Input 2: %s\n", cmds[i].input2);
 	}
 	execute(cmds, n);
 	// free memory
@@ -330,7 +358,7 @@ void init() {
 	user_name = getenv("USER");
 	//gethostname(pc_name, sizeof(pc_name));
 	int n = strlen(user_name);
-	printf("n = %d\n", n);
+	//printf("n = %d\n", n);
 	char dir_path[n+7];
 	dir_path[0] = '/';
 	dir_path[1] = 'h';
@@ -342,7 +370,7 @@ void init() {
 		dir_path[i + 6] = user_name[i];
 	}
 	dir_path[n+6] = '\0';
-	printf("[init] %s\n", dir_path);
+	//printf("[init] %s\n", dir_path);
 	
 	// share memory
 	shmfd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
@@ -371,6 +399,7 @@ void finally() {
     
 }
 
+/* Records all inputs entered into the shell */
 int toggle_recording(int recording) {
 	switch(recording) {
 		case 0:	// turn on recording
@@ -412,7 +441,7 @@ int main () {
         } else if (strcmp(user_input, "record") == 0) {
         	recording = toggle_recording(recording);
         } else {
-        	printf("Input: %s\n", user_input);
+        	//printf("Input: %s\n", user_input);
         	parser(user_input);
         }
     } 
@@ -422,5 +451,3 @@ int main () {
     }
     return 0;
 }
-
-//test input: test1 ~c hi you|test2 ~t a b
