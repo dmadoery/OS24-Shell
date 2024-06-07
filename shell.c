@@ -1,16 +1,9 @@
 #include <assert.h>
 #include <fcntl.h>
-#include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h> 
-#include <string.h> 
 #include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h> 
-#include <sys/wait.h>
-#include <unistd.h> 
 
-#include"cmd.h"
+#include"cmd.h" // includes <pthread.h> etc.
 
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
@@ -159,7 +152,7 @@ void execute(struct cmd *cmds, int length) {
 }
 
 void parser(char *in_str) {
-    int n = count(in_str, "|", "'") + 1;
+    int n = count(in_str, "|", "") + 1;
 	printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
 	for (int i = 0; i < n; i++) {
@@ -169,10 +162,14 @@ void parser(char *in_str) {
 		cmds[i].input2 = "-";
 	}
 	
-	char **full_cmd = split(in_str, "|", "'");
+	char **full_cmd = split(in_str, "|", "");
 	for(int j = 0; j < n; j++) {
-		char **splited_cmd = split(full_cmd[j], " ", "'");
 		int m = count(full_cmd[j], " ", "'") + 1;
+		if (m == 0) {	// odd number of skip-characters
+    		printf("Error[shell parser]: number of skip-characters must be even.\n");
+    		goto end;
+    	}
+    	char **splited_cmd = split(full_cmd[j], " ", "'");
 		for (int i = 0; i < m; i++) {
 			printf("%s\n", splited_cmd[i]);
 			printf("%ld\n", strlen(splited_cmd[i]));
@@ -208,6 +205,7 @@ void parser(char *in_str) {
 		printf("Input 2: %s\n", cmds[i].input2);
 	}
 	execute(cmds, n);
+	end:
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
@@ -263,8 +261,9 @@ char ** split(char *in_str, const char *delim, const char *skip_char) {
 		nr_of_chars++;
 		tmp++;
 	}
+	// the number of skip-characters should be even. Should be handled / checked using count().
 	if (ignore) {
-		printf("ERROR[shell split]: number of skip characters %c must be even.\n", *skip_char);
+		printf("DEBGUG[shell split]: number of skip characters %c must be even.\n", *skip_char);
 		exit(1);
 	}
 	
