@@ -24,7 +24,6 @@ float add(char *operand1, char *operand2);
 float sub(char *operand1, char *operand2);
 
 // Helper
-char * trim(char *str);
 char * substr(char *str, int start, int length);
 
 float comp(char *operation) {
@@ -112,6 +111,21 @@ int is_valid(char *input) {
 	return 1;
 }
 
+/* remove space-characters from the input */
+char * trim(char *input, const char *trim_char) {
+	int n = strlen(input);
+	char *output;
+	output = (char *) malloc((n + 1) * sizeof(char));
+	int j = 0;
+	for (int i = 0; i < n; i++) {
+		if (input[i] != *trim_char) {
+			output[j++] = input[i];
+		}
+	}
+	output[j] = '\0';
+	return output;
+}
+
 /*
 receives input in the format
 	command = "./calc" = argv[0]
@@ -125,12 +139,13 @@ int main(int argc, char **argv) {
 		printf("Syntax error - expected format: calc <operation>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
-	
-	if (!is_valid(argv[2])) {
+	char *operation = trim(argv[2], " "); // trim space-characters
+	if (!is_valid(operation)) {
 		return -1;
 	}
 	
 	printf("%f\n", comp(argv[2]));
+	free(operation);
 
 	// testing	
 	/*

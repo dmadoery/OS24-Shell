@@ -30,12 +30,12 @@ int main(int argc, char **argv) {
 		// open shared memory
 		shmfd = shm_open(SHM_NAME, O_RDWR, S_IRUSR | S_IWUSR);
 		if (shmfd == -1) {
-			perror("ERROR[cp pwd2]: shm_open failed");
+			perror("ERROR[to_file main]: shm_open failed");
 			exit(1);
 		}
 		data = mmap(NULL, sizeof(struct dfshm), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
 		if (data == NULL) {
-			perror("ERROR[cp pwd2]: mmap failed");
+			perror("ERROR[to_file main]: mmap failed");
 			exit(1);
 		}
 		pthread_mutex_lock(&shm_mutex_lock);
