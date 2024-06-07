@@ -27,9 +27,6 @@ mf: mf.c
 pwd: pwd.c
 	gcc pwd.c -o pwd
 
-pwd2: pwd2.c
-	gcc pwd2.c -o pwd2
-
 shell: shell.c
 	gcc shell.c -o shell
 
