@@ -28,3 +28,11 @@ struct dfshm {
 	char pc_name[PATH_MAX];
 };
 
+struct searchdata {
+    char *twd;
+    //char *name;
+};
+
+struct files {
+    char *name;
+};
