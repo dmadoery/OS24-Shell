@@ -20,7 +20,7 @@ receives input in the format
 	input2 = "-" = argv[3]
 */
 int main(int argc, char **argv) {
-	if (argc != 4 || *argv[1] != '-' || *argv[2] == '-' || *argv[3] != '-') {
+	if (argc != 4 || *argv[2] == '-' || *argv[3] != '-') {
 		printf("Syntax error - expected format: cd <dir_name>\n"); // note: user input format differs from input format receivde from shell
 		return -1;
 	}
