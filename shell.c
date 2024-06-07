@@ -205,6 +205,22 @@ void parser(char *in_str) {
 		printf("Input 2: %s\n", cmds[i].input2);
 	}
 	execute(cmds, n);
+	// free memory
+	for (int i = 0; i < n; i++) {
+		if (cmds[i].command[0] != '-') {
+			free(cmds[i].command);
+		}
+		if (cmds[i].flag[0] != '-') {
+			free(cmds[i].flag);
+		}
+		if (cmds[i].input1[0] != '-' || strlen(cmds[i].input1) > 1) {
+			free(cmds[i].input1);
+		}
+		if (cmds[i].input2[0] != '-' || strlen(cmds[i].input2) > 1) {
+			free(cmds[i].input2);
+		}
+	}
+	free(full_cmd);
 	end:
 }
 
