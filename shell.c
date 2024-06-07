@@ -196,6 +196,8 @@ void parser(char *in_str) {
 				//printf("i=3\n");
 			}
 		}
+		// free memory
+		free(splited_cmd);
 	}
 
 	for(int i = 0; i < n; i++) {
