@@ -36,3 +36,6 @@ to_file: to_file.c
 view: view.c
 	gcc view.c -o view
 
+search: search.c
+	gcc search.c -o search
+
