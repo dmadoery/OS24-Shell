@@ -32,33 +32,54 @@ int main(int argc, char **argv) {
 	if (data == NULL) {
 		printf("[cd] mmap failed\n");
 	}
-	char cwd[PATH_MAX];
-	pthread_mutex_lock(&shm_mutex_lock);	
-	strcpy(cwd, data->current_working_dir);
-	pthread_mutex_unlock(&shm_mutex_lock);	
-	char *dir_name = argv[2];
-	int n = strlen(dir_name);
-	int m = strlen(cwd);
-	printf("%s, %d\n", dir_name, n);
-	printf("%s, %d\n", cwd, m);
-	//char new_cwd[n+m+2];
-	char new_cwd[PATH_MAX];
-	printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
-	for (int i = 0; i < m; i++) {
-		new_cwd[i] = cwd[i];
-	}
-	//printf("%s\n", new_cwd);
-	new_cwd[m] = '/';
-	for (int j = 0; j < n; j++) {
-		new_cwd[m+1+j] = dir_name[j];
-	}
-	new_cwd[n+m+1] = '\0';
-	printf("%s\n", new_cwd);
-	if(0 == access(new_cwd, F_OK)) {
-		strcpy(data->current_working_dir, new_cwd);
-		printf("Changed the cwd to: %s\n", data->current_working_dir);
+	if (*argv[1] == '~') {
+		char *cwd = argv[2];
+		if(0 == access(cwd, F_OK)) {
+			strcpy(data->current_working_dir, cwd);
+			printf("Changed the cwd to: %s\n", data->current_working_dir);
+		} else {
+			printf("Directory does not exist!\n");
+		}
 	} else {
-		printf("Directory does not exist!\n");
+		char cwd[PATH_MAX];
+		pthread_mutex_lock(&shm_mutex_lock);	
+		strcpy(cwd, data->current_working_dir);
+		pthread_mutex_unlock(&shm_mutex_lock);	
+		char *dir_name = argv[2];
+		int n = strlen(dir_name);
+		int m = strlen(cwd);
+		printf("%s, %d\n", dir_name, n);
+		printf("%s, %d\n", cwd, m);
+		//char new_cwd[n+m+2];
+		char new_cwd[PATH_MAX];
+		printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
+		//If the first two inputs form argv[2] are dots('.'), then cd jumps back one directory.
+		if (dir_name[0] == '.' && dir_name[1] == '.') {
+			int i = m;
+			for (i = m - 1; cwd[i] != '/'; i--) {
+			}
+			for (int j = 0; j < i; j ++) {
+				new_cwd[j] = cwd[j];
+			}
+			new_cwd[i] = '\0';
+		} else { //opens the new directory
+			for (int i = 0; i < m; i++) {
+				new_cwd[i] = cwd[i];
+			}
+			//printf("%s\n", new_cwd);
+			new_cwd[m] = '/';
+			for (int j = 0; j < n; j++) {
+				new_cwd[m+1+j] = dir_name[j];
+			}
+			new_cwd[n+m+1] = '\0';
+		}
+		printf("%s\n", new_cwd);
+		if(0 == access(new_cwd, F_OK)) {
+			strcpy(data->current_working_dir, new_cwd);
+			printf("Changed the cwd to: %s\n", data->current_working_dir);
+		} else {
+			printf("Directory does not exist!\n");
+		}
 	}
 	
 	return 0;
