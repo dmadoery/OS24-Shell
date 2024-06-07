@@ -22,8 +22,8 @@ struct dfshm *data;
 // log file
 FILE *file;
 
-char ** split(char *in_str, const char *delim);
-int count(char *in_str, const char *delim);
+char ** split(char *in_str, const char *delim, const char *skip_char);
+int count(char *in_str, const char *delim, const char *skip_char);
 
 /* called by the parser to execute the commands
 cmds: array with the commands to be executed
@@ -159,7 +159,7 @@ void execute(struct cmd *cmds, int length) {
 }
 
 void parser(char *in_str) {
-    int n = count(in_str, "|") + 1;
+    int n = count(in_str, "|", "'") + 1;
 	printf("Number of commands: %d\n", n);
 	struct cmd cmds[n];
 	for (int i = 0; i < n; i++) {
@@ -169,10 +169,10 @@ void parser(char *in_str) {
 		cmds[i].input2 = "-";
 	}
 	
-	char **full_cmd = split(in_str, "|");
+	char **full_cmd = split(in_str, "|", "'");
 	for(int j = 0; j < n; j++) {
-		char **splited_cmd = split(full_cmd[j], " ");
-		int m = count(full_cmd[j], " ") + 1;
+		char **splited_cmd = split(full_cmd[j], " ", "'");
+		int m = count(full_cmd[j], " ", "'") + 1;
 		for (int i = 0; i < m; i++) {
 			printf("%s\n", splited_cmd[i]);
 			printf("%ld\n", strlen(splited_cmd[i]));
@@ -211,17 +211,25 @@ void parser(char *in_str) {
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
-int count(char *in_str, const char *delim) {
+int count(char *in_str, const char *delim, const char *skip_char) {
 	int counter = 0;
 	char *tmp = in_str;
+	int ignore = 0;
 	
 	while (*tmp) {
-		if (*tmp == *delim) {
+		if (*tmp == *skip_char) {
+			ignore = (++ignore) % 2; 
+		}
+		if (*tmp == *delim && !ignore) {
 			counter++;
 		}
 		tmp++;
 	}
-	return counter;
+	if (ignore) {
+		return -1;
+	} else {
+		return counter;
+	}
 }
 
 /* Helper function for split */
@@ -239,17 +247,25 @@ char* copy(char* in_str, int length) {
 }
 
 /* Splits the input string in_str int an array of substrings at each occurence of the delimiter delim*/
-char ** split(char *in_str, const char *delim) {
+char ** split(char *in_str, const char *delim, const char *skip_char) {
 	int nr_of_delims = 0;
 	int nr_of_chars = 0;
 	char *tmp = in_str;
+	int ignore = 0;
 	
 	while (*tmp) {
-		if (*tmp == *delim) {
+		if (*tmp == *skip_char) {
+			ignore = (++ignore) % 2; 
+		}
+		if (*tmp == *delim && !ignore) {
 			nr_of_delims++;
 		}
 		nr_of_chars++;
 		tmp++;
+	}
+	if (ignore) {
+		printf("ERROR[shell split]: number of skip characters %c must be even.\n", *skip_char);
+		exit(1);
 	}
 	
 	//printf("nr_of_delims: %d\n", nr_of_delims);
@@ -261,20 +277,24 @@ char ** split(char *in_str, const char *delim) {
 	int i = 0;
 	int j = 0;
 	int offset = 0;
+	int length = 0;
 	
 	for (j = 0; j < nr_of_chars; j++) {
-		//printf("j: %d\n", j);
-		if (in_str[j] == *delim) {
-			out_str[i] = copy(sub_str, j - offset);
+		if (in_str[j] == *skip_char) {
+			ignore = (++ignore) % 2; 
+		}
+		if (in_str[j] == *delim && !ignore) {
+			out_str[i] = copy(sub_str, length);
 			//printf("here\n");
 			//printf("%s\n", *out_str[i]);
 			i++;
-			offset = j + 1;
-		} else {
-			sub_str[j - offset] = in_str[j];
+			//offset = j + 1;
+			length = 0;
+		} else if (in_str[j] != *skip_char) {
+			sub_str[length++] = in_str[j];
 		}
 	}
-	out_str[i] = copy(sub_str, j - offset);
+	out_str[i] = copy(sub_str, length);
 	
 	return out_str;
 }
