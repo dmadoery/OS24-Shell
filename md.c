@@ -45,8 +45,21 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	cwd = data->current_working_dir;
+	int m = strlen(cwd);
+	char *dir_name = argv[2];
+	int n = strlen(dir_name);
+	char new_cwd[n+m+2];
+	for (int i = 0; i < m; i++) {
+				new_cwd[i] = cwd[i];
+			}
+			printf("%s\n", new_cwd);
+			new_cwd[m] = '/';
+			for (int j = 0; j < n; j++) {
+				new_cwd[m+1+j] = dir_name[j];
+			}
+			new_cwd[n+m+1] = '\0';
 	
-	int ret = md(argv[2]);
+	int ret = md(new_cwd);
 	
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);
