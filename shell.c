@@ -262,13 +262,14 @@ void parser(char *in_str) {
 	}
 	
 	char **full_cmd = split(in_str, "|", "");
+	char **splited_cmd;
 	for(int j = 0; j < n; j++) {
 		int m = count(full_cmd[j], " ", "'") + 1;
 		if (m == 0) {	// odd number of skip-characters
     		printf("Error[shell parser]: number of skip-characters must be even.\n");
     		goto end;
     	}
-    	char **splited_cmd = split(full_cmd[j], " ", "'");
+    	splited_cmd = split(full_cmd[j], " ", "'");
 		for (int i = 0; i < m; i++) {
 			//printf("%s\n", splited_cmd[i]);
 			//printf("%ld\n", strlen(splited_cmd[i]));
@@ -295,14 +296,7 @@ void parser(char *in_str) {
 				//printf("i=3\n");
 			}
 		}
-		// free memory
-		/*
-		for (int i = 0; i < n; i++) {
-			free(full_cmd[i]);
-		}
-		free(full_cmd);
-		free(splited_cmd);
-		*/
+		
 	}
 
 	for(int i = 0; i < n; i++) {
@@ -312,7 +306,13 @@ void parser(char *in_str) {
 		//printf("Input 2: %s\n", cmds[i].input2);
 	}
 	execute(cmds, n);
+	
 	// free memory
+	for (int i = 0; i < n; i++) {
+		free(full_cmd[i]);
+	}
+	free(full_cmd);
+	free(splited_cmd);
 	
 	for (int i = 0; i < n; i++) {
 		if (cmds[i].command[0] != '-') {
