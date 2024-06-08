@@ -8,14 +8,14 @@
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
 
-/* This is the Shells core, to stat the shell use: "make all" or "make -B" to compile all files needed */
+/* This is the core of the shell, to compile all relevant programs, use: "make all" or "make -B" (forced) */
 /* then start the shell using ./shell */
 
 /* This file contains: */
 
-/* execute():  */
-/* This function executes the diffrent commands, if multiple commands are called this function uses piping */
-/* To execute the commands a child process gets forked for every command */
+/* execute(): */
+/* This function executes the different commands, if multiple (two) commands are called this function uses piping */
+/* To execute the commands, a child process gets forked for every command */
 
 /* count(): */
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
@@ -90,7 +90,7 @@ void execute(struct cmd *cmds, int length) {
 		} else {	// parent
 			waitpid(pid, &status, 0);
 		}
-	} else if (length == 2) {
+	} else if (length == 2) { // this case is based on https://www.cs.purdue.edu/homes/ninghui/courses/252_Spring15/slides/CS252-Slides-2015-topic08.pptx
 		// Parent saves stdin (0) and stdout (1)
 		int tempin = dup(0);
 		int tempout = dup(1);
@@ -377,6 +377,7 @@ void init() {
 	//printf("[init] %s\n", dir_path);
 	
 	// share memory
+	// this is based on https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/ShMem.html
 	shmfd = shm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	assert( shmfd != 1);
 	assert(ftruncate(shmfd, sizeof(struct dfshm)) != -1);
