@@ -124,7 +124,8 @@ int main(int arc, char **argv) {
         //printf("[sdata[%d] is: %s\n", index, sdata[index].twd);
         index ++;
 
-        free(n);
+        //free(n);
+        destroy_node(n);
     }
     printf("Found the file at: %s, Filename: %s\n", path_for_open_cd, file_name);
     change_cd(path_for_open_cd);//sdata[index].twd

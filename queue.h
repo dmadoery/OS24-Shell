@@ -19,6 +19,12 @@ struct node * make_node(char *dir) {
 	n -> prev = NULL;
 }
 
+/* frees memory of both the node and dir (as strdup() also allocates memory) */
+void destroy_node(struct node *n) {
+	free(n -> dir);
+	free(n);
+}
+
 /* adds n at tail */
 void enqueue(struct node *n) {
 	if (nr_of_elements == 0) {
