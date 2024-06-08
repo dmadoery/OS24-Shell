@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define PATH_MAX 1024
+#define SHELL_PATH_MAX 1024
 
 // shared memory
 static const char SHM_NAME[] = "/Open_SHM2";
@@ -25,8 +25,8 @@ struct cmd {
 
 //data for shared memory
 struct dfshm {
-	char current_working_dir[PATH_MAX];
-	char pc_name[PATH_MAX];
+	char current_working_dir[SHELL_PATH_MAX];
+	char pc_name[SHELL_PATH_MAX];
 };
 
 struct searchdata {

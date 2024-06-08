@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 			printf("Directory does not exist!\n");
 		}
 	} else { // if no falg is set append dir_name to path
-		char cwd[PATH_MAX];
+		char cwd[SHELL_PATH_MAX];
 		pthread_mutex_lock(&shm_mutex_lock);	
 		strcpy(cwd, data->current_working_dir);
 		pthread_mutex_unlock(&shm_mutex_lock);	
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 		//printf("%s, %d\n", dir_name, n);
 		//printf("%s, %d\n", cwd, m);
 		//char new_cwd[n+m+2];
-		char new_cwd[PATH_MAX];
+		char new_cwd[SHELL_PATH_MAX];
 
 		//If the first two inputs form argv[2] are dots('.'), then cd jumps back one directory.
 		if (dir_name[0] == '.' && dir_name[1] == '.') {
