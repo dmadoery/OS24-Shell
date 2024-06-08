@@ -1,12 +1,8 @@
-#include <errno.h>
-#include <stdio.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <dirent.h>
-#include <stdlib.h>
-#include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <sys/mman.h>
+
 #include "cmd.h"
 
 //https://iq.opengenus.org/ls-command-in-c/#google_vignette
@@ -28,7 +24,9 @@ int ls(int flag) {
 	if (data == NULL) {
 		printf("[ls] mmap failed\n");
 	}
+	pthread_mutex_lock(&shm_mutex_lock);
 	cwd = data->current_working_dir;
+	pthread_mutex_unlock(&shm_mutex_lock);
 
     //Open directory
     DIR *dh = opendir(cwd);
