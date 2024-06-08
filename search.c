@@ -87,7 +87,7 @@ int main(int arc, char **argv) {
     char *path_for_open_cd;
     char *found_path;
 
-    //starts breadth search
+    //starts breadth first search
     while (!found) {
         count = 0;
         struct node *n = dequeue();
