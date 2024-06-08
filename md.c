@@ -1,9 +1,5 @@
-#include <errno.h>
 #include <fcntl.h> // O_RDWR
-#include <stdio.h>
 #include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include "cmd.h"
 
@@ -44,7 +40,9 @@ int main(int argc, char **argv) {
 		printf("ERROR[view main]: mmap failed\n");
 		return -1;
 	}
+	pthread_mutex_lock(&shm_mutex_lock);
 	cwd = data->current_working_dir;
+	pthread_mutex_unlock(&shm_mutex_lock);
 	int m = strlen(cwd);
 	char *dir_name = argv[2];
 	int n = strlen(dir_name);
