@@ -177,7 +177,88 @@ void execute(struct cmd *cmds, int length) {
 		}
 		
 	} else if (length > 2) {
-		// TODO piping
+		// Parent saves stdin (0) and stdout (1)
+		int tempin = dup(0);
+		int tempout = dup(1);
+		
+		for (int i = 1; i < length; i++) {
+			int fdpipe[2];
+			pipe(fdpipe); // pipe must be created in parent such that both children have access
+		
+			dup2(fdpipe[1], 1);	// stdout now refers to fdpipe[1], the write-to end of the (uni-)directional pipe
+			close(fdpipe[1]);	// since stdout is now a copy of fdpipe[1], the original is no longer needed
+			// fork
+			pid_t pid = fork();
+			if (pid < 0) {
+				perror("ERROR[shell execute]: fork error\n");
+			} else if (pid == 0) {	// child	
+				close(fdpipe[0]); // the read-from end of the pipe is not needed in the first process (only the second)
+				char *cmd_str = cmds[0].command;
+				int n = strlen(cmd_str);
+				// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+				char cmd_exec[n + 3];
+				cmd_exec[0] = '.';
+				cmd_exec[1] = '/';
+				for (int i = 0; i < n; i++) {
+					cmd_exec[i + 2] = cmd_str[i];
+				}
+				cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+				char *argv[] = {cmd_exec, cmds[0].flag, cmds[0].input1, cmds[0].input2, NULL};
+				execvp(argv[0], argv);
+				// this section is only accessed if execvp fail
+				switch(errno) {
+					case 2:
+						perror("ERROR[shell execute]: command not found\n");
+						break;
+					case 13:
+						perror("ERROR[shell execute]: permission denied\n");
+						break;
+					default:
+						perror("DEBUG[shell execute]: unhandled errno\n");
+				}
+				_exit(errno);
+
+			} else {	// parent
+				dup2(fdpipe[0], 0);	// stdin now refers to fdpipe[0], the read-from end of the (uni-)directional pipe
+				close(fdpipe[0]);	// close the original
+			
+				dup2(tempout, 1); // restore stdout (1)
+				// fork
+				pid_t pid = fork();
+				if (pid < 0) {
+					perror("ERROR[shell execute]: fork error\n");
+				} else if (pid == 0) {	// child			
+					char *cmd_str = cmds[1].command;
+					int n = strlen(cmd_str);
+					// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+					char cmd_exec[n + 3];
+					cmd_exec[0] = '.';
+					cmd_exec[1] = '/';
+					for (int i = 0; i < n; i++) {
+						cmd_exec[i + 2] = cmd_str[i];
+					}
+					cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+					char *argv[] = {cmd_exec, cmds[1].flag, cmds[1].input1, cmds[1].input2, NULL};
+					execvp(argv[0], argv);
+					// this section is only accessed if execvp fail
+					switch(errno) {
+						case 2:
+							perror("ERROR[shell execute]: command not found\n");
+							break;
+						case 13:
+							perror("ERROR[shell execute]: permission denied\n");
+							break;
+						default:
+							perror("DEBUG[shell execute]: unhandled errno\n");
+					}
+					_exit(errno);
+				} else {	// parent
+					dup2(tempin, 0);	// restore stdin (0)
+						
+					waitpid(pid, NULL, 0);
+				}
+			}
+		}
 	} else { // length < 1
 		printf("DEBUG[shell execute]: length < 1\n");
 	}
