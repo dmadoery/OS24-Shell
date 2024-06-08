@@ -4,6 +4,9 @@
 
 #include "cmd.h"
 
+/* Expected call format: pwd */
+/* Returns the current directory path */
+
 /*
 receives input in the format
 	command = "./pwd2" = argv[0]

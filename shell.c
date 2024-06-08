@@ -8,10 +8,10 @@
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
 
-/* This is the Shells core, to stat the shell use: "makefile -B" to compile all files needed */
+/* This is the Shells core, to stat the shell use: "make all" or "make -B" to compile all files needed */
 /* then start the shell using ./shell */
 
-/* This file contain: */
+/* This file contains: */
 
 /* execute():  */
 /* This function executes the diffrent commands, if multiple commands are called this function uses piping */

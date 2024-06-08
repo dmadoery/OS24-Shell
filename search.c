@@ -11,8 +11,18 @@
 /* Expected call format: search <file_name> */
 /* starts search from /home and finishes the search if a file with the searched <file_name> is found */
 
+/* This file contains: */
+
+/* getreelPath() */
+/* shortens the constructed path where the file is found to a reel working path */
+
+/* change_cd() */
+/* calls the command cd which is implemented in cd.c via a child process */
+
 #define BUFFER_SIZE 512
 
+
+//does set the path to the reel path, because the file_name is allways appenden in the end
 char *getReelPath(char *path) {
 	int m = strlen(path);
 	char *reelpath = path;
@@ -27,6 +37,7 @@ char *getReelPath(char *path) {
 	return reelpath;
 }
 
+//runs the cd command implemented with cd.c
 void *change_cd(char *data) {
     char *cmd_exec = "./cd";
     char *flag = "~f";
@@ -61,7 +72,6 @@ int main(int arc, char **argv) {
 		return -1;
 	}
     char *cwd = "/home";
-    //printf("doing shit\n");
     //printf("cwd: %s\n", cwd);
     char *file_name = argv[2];
     //printf("file_name = %s\n", file_name);
@@ -74,11 +84,11 @@ int main(int arc, char **argv) {
     sdata[i].twd = cwd;
     int index = 0; 
     int count = 0;
-    //printf("everything ready to search!\n");
-    char *found_path;
     char *path_for_open_cd;
+    char *found_path;
+
+    //starts breadth search
     while (!found) {
-        //printf("starting LOOP\n");
         count = 0;
         struct node *n = dequeue();
         char buffer[BUFFER_SIZE];
@@ -87,7 +97,8 @@ int main(int arc, char **argv) {
 		dir = opendir(n -> dir);
 		struct dirent *d;
 		struct stat s;
-        //printf("open new path!\n");
+
+        //appends all directories into the queue and adds all files to the files struct.
         while ((d = readdir(dir)) != NULL) {
 			sprintf(buffer, "%s/%s", n -> dir, d -> d_name);
 			stat(buffer, &s);
@@ -97,25 +108,22 @@ int main(int arc, char **argv) {
                 i++;
                 //printf("added dir: %s\n", buffer);
                 sdata[i].twd = buffer;
-                //printf("sdata[%d] is: %s\n", i, sdata[i].twd);
-                //printf("sdata[%d] after directory added: %s\n", index, sdata[index].twd);
             } else if (S_ISREG(s.st_mode)){
             	//printf("sdata[%d] before file added: %s\n", index, sdata[index].twd);
                 files[count].name = d -> d_name;
                 //printf("file: %s\n", d -> d_name);
-                //printf("file stored at files[%d]: %s\n", count, files[count].name);
                 count++;
-                //printf("sdata[%d] after file added: %s\n", index, sdata[index].twd);
             }
         }
         closedir(dir);
         int j = 0;
+
+        //check if file is found allready
         while (count != 0) {
             if (strcmp(files[j].name, file_name) == 0) {
                 found = true;
                 found_path = sdata[index].twd;
                 path_for_open_cd = getReelPath(found_path);
-                //printf("got here test test\n");
                 break;
             }
             count--;
@@ -123,8 +131,6 @@ int main(int arc, char **argv) {
         }
         //printf("[sdata[%d] is: %s\n", index, sdata[index].twd);
         index ++;
-
-        //free(n);
         destroy_node(n);
     }
     printf("Found the file at: %s, Filename: %s\n", path_for_open_cd, file_name);

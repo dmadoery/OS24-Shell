@@ -6,7 +6,10 @@
 /* Expected call format cd (~f) <dir_name> (<dir_path>) */
 /* changes the directory to the given <dir_name> */
 /* if flag is set to ~f, an absolute path must be given */
+/* if for <dir_name> ".." is entered the shell goes back one directory */
 
+
+//changes the path to dir_name
 int cd(const char *dir_name) {
 	if (chdir(dir_name) == 0) {
 		return 0;		
@@ -35,6 +38,7 @@ int main(int argc, char **argv) {
 	if (data == NULL) {
 		printf("[cd] mmap failed\n");
 	}
+	//checks if flag is set
 	if (*argv[1] == '~') {
 		char *cwd = argv[2];
 		if(0 == access(cwd, F_OK)) {
@@ -43,7 +47,7 @@ int main(int argc, char **argv) {
 		} else {
 			printf("Directory does not exist!\n");
 		}
-	} else {
+	} else { // if no falg is set append dir_name to path
 		char cwd[PATH_MAX];
 		pthread_mutex_lock(&shm_mutex_lock);	
 		strcpy(cwd, data->current_working_dir);
@@ -55,7 +59,7 @@ int main(int argc, char **argv) {
 		//printf("%s, %d\n", cwd, m);
 		//char new_cwd[n+m+2];
 		char new_cwd[PATH_MAX];
-		//printf("strlen(new_cwd): %ld\n", strlen(new_cwd));
+
 		//If the first two inputs form argv[2] are dots('.'), then cd jumps back one directory.
 		if (dir_name[0] == '.' && dir_name[1] == '.') {
 			int i = m;

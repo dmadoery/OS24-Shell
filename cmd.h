@@ -15,6 +15,7 @@ static const char SHM_NAME[] = "/Open_SHM2";
 // mutex
 pthread_mutex_t shm_mutex_lock;
 
+//data for inputs fom user
 struct cmd {
     char *command;
     char *flag;

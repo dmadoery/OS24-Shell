@@ -4,6 +4,12 @@
 #include <string.h>
 
 #define LOWEST_PRECEDENCE 4
+
+/* Expected call format: calc <calculation> */
+/* Calculates the given <calculation> with the Precedence rules below */
+/* Imortant the format of <calculation> is restircted to not include any spaces  */
+/* If spaces want to be used the format must be '<calculation>' */
+
 /*
 Precedence rules: https://en.cppreference.com/w/c/language/operator_precedence
 Highest
@@ -12,6 +18,23 @@ Highest
 3: *, /
 4: binary + and binary -
 Lowest
+*/
+
+/*
+This file contains:
+
+comp(): checks which mathematical operations are called and calls them in the mathematically correct order
+
+The different mathematical operations:
+mult()
+divi()
+add()
+sub()
+
+substr(): Creates a substring from a given string
+is_valid(): Validates the given input
+trim(): remove space-characters from the input
+
 */
 
 // maybe use long double instead of float. Is there atof-like function for (long) double?
@@ -26,6 +49,7 @@ float sub(char *operand1, char *operand2);
 // Helper
 char * substr(char *str, int start, int length);
 
+// Chacks whitch operations shall be called and call them in mathematically correct order
 float comp(char *operation) {
 	int n = strlen(operation);
 	for (int p = LOWEST_PRECEDENCE; p > 1; p--) {	// ignore () for now

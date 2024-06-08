@@ -6,6 +6,9 @@
 
 #define MAX_LINE 128
 
+/* Expected call format: to_file (~a) <file_name> */
+/* Can be used in Piping to append or overwritte something genarated with a first command into a file */
+/* Example: calc 2+*3*4|to_file ~a math.txt */
 /*
 receives input in the format
 	command = "./to_file" = argv[0]

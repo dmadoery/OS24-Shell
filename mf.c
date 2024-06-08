@@ -7,6 +7,9 @@
 
 #include "cmd.h"
 
+/* Expected call format: mf <file_name> */
+/* Creates a new file with the name <file_name> in the current open directory */
+
 /*
 receives input in the format
 	command = "./mf" = argv[0]

@@ -7,7 +7,7 @@
 #include "cmd.h"
 
 /* Expected call format: view <file_name> */
-/* diplays the content of the file in the shell */
+/* diplays the content of the file <file_name> in the shell */
 
 /*
 receives input in the format
