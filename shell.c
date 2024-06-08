@@ -313,7 +313,7 @@ void parser(char *in_str) {
 	}
 	execute(cmds, n);
 	// free memory
-	/*
+	
 	for (int i = 0; i < n; i++) {
 		if (cmds[i].command[0] != '-') {
 			free(cmds[i].command);
@@ -328,7 +328,7 @@ void parser(char *in_str) {
 			free(cmds[i].input2);
 		}
 	}
-	*/
+	
 	end:
 }
 
