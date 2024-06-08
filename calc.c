@@ -57,6 +57,7 @@ float comp(char *operation) {
 	return atof(operation);
 }
 
+/* calculates the product operand1 * operand2 */
 float mult(char *operand1, char *operand2) {
 	float result = comp(operand1) * comp(operand2);
 	free(operand1);
@@ -64,6 +65,7 @@ float mult(char *operand1, char *operand2) {
 	return result;
 }
 
+/* calculates the ratio operand1 / operand2 */
 float divi(char *operand1, char *operand2) {
 	float result = comp(operand1) / comp(operand2);
 	free(operand1);
@@ -71,6 +73,7 @@ float divi(char *operand1, char *operand2) {
 	return result;
 }
 
+/* calculates the sum operand1 + operand2 */
 float add(char *operand1, char *operand2) {
 	float result = comp(operand1) + comp(operand2);
 	free(operand1);
@@ -78,6 +81,7 @@ float add(char *operand1, char *operand2) {
 	return result;
 }
 
+/* calcuates the difference operand1 - operand2 */
 float sub(char *operand1, char *operand2) {
 	float result = comp(operand1) - comp(operand2);	// exception: comp("2-3-4) = comp("2") + comp("-3-4") = 2 + comp("-3") + comp("-4") = 2 + -3 + -4 = -5
 	free(operand1);

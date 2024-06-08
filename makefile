@@ -1,7 +1,7 @@
 # To run, enter: make all
 # To force a recompilation (e.g., when changing cmd.h), enter make -B
 
-all: browse calc cd cp ls md mf pwd shell to_file view search
+all: browse calc cd cp ls md mf pwd search shell to_file view 
 
 browse: browse.c
 	gcc browse.c -o browse
@@ -27,6 +27,9 @@ mf: mf.c
 pwd: pwd.c
 	gcc pwd.c -o pwd
 
+search: search.c
+	gcc search.c -o search
+
 shell: shell.c
 	gcc shell.c -o shell
 
@@ -35,7 +38,4 @@ to_file: to_file.c
 
 view: view.c
 	gcc view.c -o view
-
-search: search.c
-	gcc search.c -o search
 
