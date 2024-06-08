@@ -225,6 +225,10 @@ void parser(char *in_str) {
 			}
 		}
 		// free memory
+		for (int i = 0; i < n; i++) {
+			free(full_cmd[i]);
+		}
+		free(full_cmd);
 		free(splited_cmd);
 	}
 
@@ -250,7 +254,7 @@ void parser(char *in_str) {
 			free(cmds[i].input2);
 		}
 	}
-	free(full_cmd);
+	
 	end:
 }
 
