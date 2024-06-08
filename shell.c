@@ -60,6 +60,7 @@ void execute(struct cmd *cmds, int length) {
 		//printf("Input 1: %s\n", cmds[i].input1);
 		//printf("Input 2: %s\n", cmds[i].input2);
 	}
+	
 	if (length == 1) {
 		// no piping
 		char *cmd_str = cmds[0].command;
@@ -95,6 +96,7 @@ void execute(struct cmd *cmds, int length) {
 			waitpid(pid, &status, 0);
 		}
 	} else if (length == 2) { // this case is based on https://www.cs.purdue.edu/homes/ninghui/courses/252_Spring15/slides/CS252-Slides-2015-topic08.pptx
+		
 		// Parent saves stdin (0) and stdout (1)
 		int tempin = dup(0);
 		int tempout = dup(1);
@@ -175,39 +177,68 @@ void execute(struct cmd *cmds, int length) {
 				waitpid(pid, NULL, 0);
 			}
 		}
-		
-	} else if (length > 2) {
+	
+	} else if (length > 2) { // this is based on https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/
+	
+	//if (length > 0) {
 		// Parent saves stdin (0) and stdout (1)
 		int tmpin = dup(0);
 		int tmpout = dup(1);
 		
-		int fdin = tmpin;	// first process has stdin as its input
+		int fdin = dup(tmpin);	// first process has stdin as its input
 		int fdout;
 		
 		pid_t pid;
 		
 		for (int i = 0; i < length; i++) {
+			perror("DEBUG[shell execute]: beginning of for");
 			dup2(fdin, 0);	// 0 now refers to fdin (which should be fdout of the previous process / stdin initially)
 			close(fdin);
 			
 			if (i == length - 1) {
 				fdout = dup(tmpout);	// dup(fd) returns a new file descriptor pointing to fd; this restores the stdout
 			} else {
+				perror("DEBUG[shell execute]: before pipe");
 				int fdpipe[2];
 				pipe(fdpipe);
 				fdout = fdpipe[1];
 				fdin = fdpipe[0];
+				perror("DEBUG[shell execute]: after pipe");
 			}
 			dup2(fdout, 1);		// 1 now refers to fdout (which is write end of the pipe / stdout for last process)
 			close(fdout);
 			
 			pid = fork();
 			if (pid < 0) {
-				perror("ERROR[shell execute]: fork error\n");
+				perror("ERROR[shell execute]: fork error");
 			} else if (pid == 0) {	// child
-				
+				char *cmd_str = cmds[i].command;
+				int n = strlen(cmd_str);
+				// turn "cmd_str" to "./cmd_str\0" (e.g., turn md into "./md\0")
+				char cmd_exec[n + 3];
+				cmd_exec[0] = '.';
+				cmd_exec[1] = '/';
+				for (int j = 0; j < n; j++) {
+					cmd_exec[j + 2] = cmd_str[j];
+				}
+				cmd_exec[n + 2] = '\0'; // Maybe adding /0 should be done sooner?
+				char *argv[] = {cmd_exec, cmds[i].flag, cmds[i].input1, cmds[i].input2, NULL};
+				execvp(argv[0], argv);
+				// this section is only accessed if execvp fail
+				switch(errno) {
+					case 2:
+						perror("ERROR[shell execute]: command not found");
+						break;
+					case 13:
+						perror("ERROR[shell execute]: permission denied");
+						break;
+					default:
+						perror("DEBUG[shell execute]: unhandled errno\n");
+				}
+				_exit(errno);
 			}
 		}
+		perror("DEBUG[shell execut]: after for");
 		dup2(tmpin, 0);		// restore 0 to default stdin
 		dup2(tmpout, 1);	// retsore 1 to default stdout
 		close(tmpin);
@@ -265,11 +296,13 @@ void parser(char *in_str) {
 			}
 		}
 		// free memory
+		/*
 		for (int i = 0; i < n; i++) {
 			free(full_cmd[i]);
 		}
 		free(full_cmd);
 		free(splited_cmd);
+		*/
 	}
 
 	for(int i = 0; i < n; i++) {
@@ -280,6 +313,7 @@ void parser(char *in_str) {
 	}
 	execute(cmds, n);
 	// free memory
+	/*
 	for (int i = 0; i < n; i++) {
 		if (cmds[i].command[0] != '-') {
 			free(cmds[i].command);
@@ -294,7 +328,7 @@ void parser(char *in_str) {
 			free(cmds[i].input2);
 		}
 	}
-	
+	*/
 	end:
 }
 
