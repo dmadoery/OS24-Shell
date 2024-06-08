@@ -5,10 +5,12 @@
 
 #define LOWEST_PRECEDENCE 4
 
-/* Expected call format: calc <calculation> */
-/* Calculates the given <calculation> with the Precedence rules below */
-/* Imortant the format of <calculation> is restircted to not include any spaces  */
-/* If spaces want to be used the format must be '<calculation>' */
+/*
+Expected call format: calc <calculation> 
+Calculates the given <calculation> with the Precedence rules below 
+Imortant the format of <calculation> is restircted to not include any spaces  
+If spaces want to be used the format must be '<calculation>' 
+*/
 
 /*
 Precedence rules: https://en.cppreference.com/w/c/language/operator_precedence

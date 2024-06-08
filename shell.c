@@ -8,33 +8,37 @@
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
 #define DEBUG_MAX_IT 10
 
-/* This is the core of the shell, to compile all relevant programs, use: "make all" or "make -B" (forced) */
-/* then start the shell using ./shell */
+/* 
+This is the core of the shell, to compile all relevant programs, use: "make all" or "make -B" (forced) 
+then start the shell using ./shell 
+*/
 
-/* This file contains: */
+/* 
+This file contains: 
 
-/* execute(): */
-/* This function executes the different commands, if multiple (two) commands are called this function uses piping */
-/* To execute the commands, a child process gets forked for every command */
+execute():
+This function executes the different commands, if multiple (two) commands are called this function uses piping 
+To execute the commands, a child process gets forked for every command 
 
-/* count(): */
-/* Counts the number of occurences of the delimiter delim in the input strint in_str */
+count(): 
+Counts the number of occurences of the delimiter delim in the input strint in_str 
 
-/* split(): */
-/* Splits the input string in_str into an array of substrings at each occurence of the delimiter delim */
+split(): 
+Splits the input string in_str into an array of substrings at each occurence of the delimiter delim 
 
-/* copy(): */
-/* Helper function for split() */
+copy(): 
+Helper function for split() 
 
-/* init(): */
-/* Is used to initialize staring information for the Shell */
-/* initialize user_name, pc_name, sets path */
+init(): 
+Is used to initialize staring information for the Shell 
+initialize user_name, pc_name, sets path 
 
-/* finally(): */
-/* Is called before exiting the shell to properly free memory and close shared memory */
+finally(): 
+Is called before exiting the shell to properly free memory and close shared memory 
 
-/* toggle_recording(): */
-/* Records all user inputs entered into the shell */
+toggle_recording(): 
+Records all user inputs entered into the shell 
+*/
 
 // shared memory
 int shmfd;
