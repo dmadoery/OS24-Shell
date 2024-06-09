@@ -307,11 +307,13 @@ void parser(char *in_str) {
 	}
 	execute(cmds, n);
 	
+	end:
+	
 	// free memory
 	for (int i = 0; i < n; i++) {
 		free(full_cmd[i]);
 	}
-	free(full_cmd);
+	//free(full_cmd); // cd ~f /home/huch/Desktop resulted (sometimes) in free() failing ...
 	free(splited_cmd);
 	
 	for (int i = 0; i < n; i++) {
@@ -328,8 +330,7 @@ void parser(char *in_str) {
 			free(cmds[i].input2);
 		}
 	}
-	
-	end:
+
 }
 
 /* Counts the number of occurences of the delimiter delim in the input strint in_str */
