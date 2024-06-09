@@ -501,8 +501,8 @@ int main () {
 	init();
 	int recording = 0;	// 0 = False
     char user_input[MAX_INPUT_LENGTH];
-    //while(1) { debugging
-    for (int i = 0; i < DEBUG_MAX_IT; i++) {
+    while(1) { //debugging
+    //for (int i = 0; i < DEBUG_MAX_IT; i++) {
         printf("$ ");
         //s
         fgets(user_input, MAX_INPUT_LENGTH, stdin);	// don't use canf("%[^\n]%*c", user_input); as an empty input results in infinite loop and hard crash of terminal
