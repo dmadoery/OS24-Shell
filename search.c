@@ -86,9 +86,9 @@ int main(int arc, char **argv) {
     int count = 0;
     char *path_for_open_cd;
     char *found_path;
-
     //starts breadth first search
     while (!found) {
+        //printf("size of queue: %d\n", size());
         count = 0;
         struct node *n = dequeue();
         char buffer[BUFFER_SIZE];
@@ -133,6 +133,10 @@ int main(int arc, char **argv) {
         index ++;
         destroy_node(n);
     }
-    printf("Found the file at: %s, Filename: %s\n", path_for_open_cd, file_name);
-    change_cd(path_for_open_cd);//sdata[index].twd
+    if (found) {
+        printf("Found the file at: %s, Filename: %s\n", path_for_open_cd, file_name);
+        change_cd(path_for_open_cd);//sdata[index].twd
+    } else {
+        printf("File <%s> not found.\n", file_name);
+    }
 }

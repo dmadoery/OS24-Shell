@@ -6,7 +6,7 @@
 #include"cmd.h" // includes <pthread.h> etc.
 
 #define MAX_INPUT_LENGTH 256	/* maximal length of shell command */
-#define DEBUG_MAX_IT 10
+#define DEBUG_MAX_IT 100
 
 /* 
 This is the core of the shell, to compile all relevant programs, use: "make all" or "make -B" (forced) 

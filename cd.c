@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 		char new_cwd[SHELL_PATH_MAX];
 
 		//If the first two inputs form argv[2] are dots('.'), then cd jumps back one directory.
-		if (dir_name[0] == '.' && dir_name[1] == '.') {
+		if (dir_name[0] == '.' && dir_name[1] == '.' && dir_name[2] == '\0') {
 			int i = m;
 			for (i = m - 1; cwd[i] != '/'; i--) {
 			}
