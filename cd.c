@@ -42,7 +42,9 @@ int main(int argc, char **argv) {
 	if (*argv[1] == '~') {
 		char *cwd = argv[2];
 		if(0 == access(cwd, F_OK)) {
+			pthread_mutex_lock(&shm_mutex_lock);
 			strcpy(data->current_working_dir, cwd);
+			pthread_mutex_unlock(&shm_mutex_lock);	
 			printf("Changed the cwd to: %s\n", data->current_working_dir);
 		} else {
 			printf("Directory does not exist!\n");
@@ -82,7 +84,9 @@ int main(int argc, char **argv) {
 		}
 		//printf("%s\n", new_cwd);
 		if(0 == access(new_cwd, F_OK)) {
+			pthread_mutex_lock(&shm_mutex_lock);	
 			strcpy(data->current_working_dir, new_cwd);
+			pthread_mutex_unlock(&shm_mutex_lock);	
 			printf("Changed the cwd to: %s\n", data->current_working_dir);
 		} else {
 			printf("Directory does not exist!\n");

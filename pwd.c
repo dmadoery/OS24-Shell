@@ -1,5 +1,4 @@
 #include <fcntl.h>
-#include <stdio.h>
 #include <sys/mman.h>
 
 #include "cmd.h"
@@ -31,7 +30,9 @@ int main(int argc, char **argv) {
 		printf("ERROR[pwd2] mmap failed\n");
 		return -1;
 	}
+	pthread_mutex_lock(&shm_mutex_lock);
 	cwd = data->current_working_dir;
+	pthread_mutex_unlock(&shm_mutex_lock);
 	printf("cwd: %s\n", cwd);
 	munmap (data, sizeof (struct dfshm));
     close (shmfd);

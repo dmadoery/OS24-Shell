@@ -34,7 +34,9 @@ int main(int argc, char **argv) {
 		printf("ERROR[view main]: mmap failed\n");
 		return -1;
 	}
+	pthread_mutex_lock(&shm_mutex_lock);
 	cwd = data->current_working_dir;
+	pthread_mutex_unlock(&shm_mutex_lock);
     
     int m = strlen(cwd); // strlen() does not include '\0'
     int n = strlen(argv[2]);
