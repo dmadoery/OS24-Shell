@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	
-	printf("%f\n", comp(argv[2]));
+	printf("%f\n", comp(operation));
 	free(operation);
 
 	// testing	
