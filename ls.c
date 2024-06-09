@@ -52,6 +52,10 @@ int ls(int flag) {
 }
 
 int main(int argc, char **argv) {
+    if (argc != 4 || *argv[2] != '-' || *argv[3] != '-') {
+		printf("Syntax error - expected format: ls (~a)\n"); // note: user input format differs from input format receivde from shell
+		return -1;
+	}
     int flag;
     if(*argv[1] == '-') {
         flag = 0;

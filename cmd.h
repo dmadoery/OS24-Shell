@@ -10,7 +10,7 @@
 #define SHELL_PATH_MAX 1024
 
 // shared memory
-static const char SHM_NAME[] = "/Open_SHM";
+static const char SHM_NAME[] = "/Open_SHM1";
 
 // mutex
 pthread_mutex_t shm_mutex_lock;

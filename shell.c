@@ -517,7 +517,26 @@ int main () {
         if (strcmp(user_input, "exit") == 0) {
         	//finally(); // can be moved ouside the while loop
         	break;
-        } else if (strcmp(user_input, "record") == 0) {
+
+        } 
+		if (strcmp(user_input, "help") == 0) {
+			printf("This are all available commands:\n"
+			"- pwd: 				to get the current working directory\n"
+			"- cd (~f) <dir_name>:		to change the working direkcory\n"
+			"- ls (~a):			to list all (hidden)files in the current directory\n"
+			"- md <dir_name>: 		to create a new directory\n"
+			"- mf <file_name>: 		to create a new file\n"
+			"- cp <from_file> <to_file>: 	Copies the file from_file to to_file.\n"
+			"				Note that the to_file may include a relative or absolute path\n"
+			"- to_file (~a) <to_file>: 	Used to redirect output from the console (i.e., stdout) \n"
+			"				to a file using piping.\n"
+			"				If ∼a, then the file is opened in append-mode (a),\n"
+			"				otherwise in write mode (w).\n"
+			"- search <file_name>: 		searches for file_name starting froem /home\n"
+			"- view <file_name>: 		displays the content of the file in the shell\n"
+			"- browse <web_page>: 		opens the webpage on the standart webbrowser\n"
+			"- calc <operation>: 		calculates the given operation\n");
+		} else if (strcmp(user_input, "record") == 0) {
         	recording = toggle_recording(recording);
         } else {
         	//printf("Input: %s\n", user_input);
