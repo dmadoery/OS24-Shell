@@ -191,26 +191,26 @@ void execute(struct cmd *cmds, int length) {
 		pid_t pid;
 		
 		for (int i = 0; i < length; i++) {
-			perror("DEBUG[shell execute]: beginning of for");
+			//perror("DEBUG[shell execute]: beginning of for");
 			dup2(fdin, 0);	// 0 now refers to fdin (which should be fdout of the previous process / stdin initially)
 			close(fdin);
 			
 			if (i == length - 1) {
 				fdout = dup(tmpout);	// dup(fd) returns a new file descriptor pointing to fd; this restores the stdout
 			} else {
-				perror("DEBUG[shell execute]: before pipe");
+				//perror("DEBUG[shell execute]: before pipe");
 				int fdpipe[2];
 				pipe(fdpipe);
 				fdout = fdpipe[1];
 				fdin = fdpipe[0];
-				perror("DEBUG[shell execute]: after pipe");
+				//perror("DEBUG[shell execute]: after pipe");
 			}
 			dup2(fdout, 1);		// 1 now refers to fdout (which is write end of the pipe / stdout for last process)
 			close(fdout);
 			
 			pid = fork();
 			if (pid < 0) {
-				perror("ERROR[shell execute]: fork error");
+				//perror("ERROR[shell execute]: fork error");
 			} else if (pid == 0) {	// child
 				char *cmd_str = cmds[i].command;
 				int n = strlen(cmd_str);
@@ -238,7 +238,7 @@ void execute(struct cmd *cmds, int length) {
 				_exit(errno);
 			}
 		}
-		perror("DEBUG[shell execut]: after for");
+		//perror("DEBUG[shell execut]: after for");
 		dup2(tmpin, 0);		// restore 0 to default stdin
 		dup2(tmpout, 1);	// retsore 1 to default stdout
 		close(tmpin);
