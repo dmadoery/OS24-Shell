@@ -1,0 +1,24 @@
+
+
+
+
+						
+						Implementation
+						
+						
+						
+				   $ [How does the shell work?]​
+
+				   $ Simple grammar for user input​
+
+				   $ Shell parses user input and starts programs (if available)​
+
+				   $ Piping and signal (error) handling​
+
+				   $ Features implemented through separate programs​
+
+
+
+
+
+
